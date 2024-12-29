@@ -38,6 +38,12 @@
       <height>600</height>
      </size>
     </property>
+    <property name="font">
+     <font>
+      <family>Comic Sans MS</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
     </property>
@@ -120,16 +126,16 @@
      <widget class="QLabel" name="label_1">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>50</y>
+        <x>10</x>
+        <y>10</y>
         <width>181</width>
         <height>51</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
@@ -254,15 +260,15 @@ Diameter
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>70</y>
+        <y>40</y>
         <width>181</width>
         <height>51</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
@@ -273,16 +279,16 @@ Diameter
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>10</y>
+        <x>290</x>
+        <y>-10</y>
         <width>181</width>
         <height>51</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
@@ -298,6 +304,12 @@ Diameter
         <width>50</width>
         <height>50</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+       </font>
       </property>
       <property name="text">
        <string/>
@@ -315,16 +327,16 @@ Diameter
      <widget class="QLabel" name="patientHas_2">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>330</y>
+        <x>40</x>
+        <y>280</y>
         <width>261</width>
         <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
@@ -332,34 +344,20 @@ Diameter
        <string>In an Emergency:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="patientHas_3">
+     <widget class="QCheckBox" name="checkBox">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>360</y>
-        <width>251</width>
-        <height>51</height>
+        <x>10</x>
+        <y>310</y>
+        <width>231</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
-        <bold>true</bold>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
        </font>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>370</y>
-        <width>231</width>
-        <height>20</height>
-       </rect>
       </property>
       <property name="text">
        <string>Call for HELP and ENT On-Call</string>
@@ -368,15 +366,16 @@ Diameter
      <widget class="QCheckBox" name="checkBox_2">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>390</y>
+        <x>10</x>
+        <y>330</y>
         <width>471</width>
         <height>41</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>12</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
        </font>
       </property>
       <property name="text">
@@ -393,36 +392,36 @@ Diameter
      <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>40</y>
+        <x>320</x>
+        <y>20</y>
         <width>241</width>
         <height>51</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Indication for Tracheostomy</string>
+       <string>Indication:</string>
       </property>
      </widget>
      <widget class="QLabel" name="patientHas_4">
       <property name="geometry">
        <rect>
-        <x>440</x>
-        <y>340</y>
-        <width>241</width>
-        <height>51</height>
+        <x>520</x>
+        <y>320</y>
+        <width>251</width>
+        <height>61</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Cambria</family>
-        <pointsize>11</pointsize>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
         <bold>true</bold>
        </font>
       </property>
@@ -432,6 +431,301 @@ Diameter
  (per RT standard)</string>
       </property>
      </widget>
+     <widget class="QLabel" name="patientHas_5">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>450</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>[YES OR NO]
+MASK VENTILATE</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_6">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>480</y>
+        <width>201</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>[YES OR NO]
+INTUBATION FROM ABOVE</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_7">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>480</y>
+        <width>331</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>[IF YES]
+ [Size in CM] ETT [WITH/WITHOUT] CUFF</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_8">
+      <property name="geometry">
+       <rect>
+        <x>-10</x>
+        <y>520</y>
+        <width>271</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>[YES OR NO]
+INTUBATION THROUGH STOMA</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_9">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>520</y>
+        <width>331</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>[IF YES]
+ [Size in CM] ETT [WITH/WITHOUT] CUFF</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_10">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>460</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Special Airway Comments</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>50</y>
+        <width>361</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Surgeon/Date of surgery/First Trach change</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_11">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>300</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>ENT On-Call Information</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_17">
+      <property name="geometry">
+       <rect>
+        <x>-10</x>
+        <y>400</y>
+        <width>141</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Precautions</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QTreeWidget" name="treeWidget">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>370</y>
+        <width>256</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <column>
+       <property name="text">
+        <string>Emergency Flowchart</string>
+       </property>
+      </column>
+      <item>
+       <property name="text">
+        <string>Trach Tube Dislodged</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Bleeding From Tube</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>O2 Level Falling</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Trach Tube Blocked: Can't Suction</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Trach Tube Blocked: Can't Ventilate</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>370</y>
+        <width>471</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Comic Sans MS</family>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+     </widget>
+     <zorder>treeWidget</zorder>
+     <zorder>label_1</zorder>
+     <zorder>tableWidget</zorder>
+     <zorder>patientHas</zorder>
+     <zorder>label_3</zorder>
+     <zorder>label_4</zorder>
+     <zorder>patientHas_2</zorder>
+     <zorder>checkBox</zorder>
+     <zorder>checkBox_2</zorder>
+     <zorder>label_5</zorder>
+     <zorder>patientHas_4</zorder>
+     <zorder>patientHas_5</zorder>
+     <zorder>patientHas_6</zorder>
+     <zorder>patientHas_7</zorder>
+     <zorder>patientHas_8</zorder>
+     <zorder>patientHas_9</zorder>
+     <zorder>patientHas_10</zorder>
+     <zorder>label_6</zorder>
+     <zorder>patientHas_11</zorder>
+     <zorder>patientHas_17</zorder>
+     <zorder>checkBox_3</zorder>
     </widget>
     <widget class="QWidget" name="nTracheostomyPage_2"/>
     <widget class="QWidget" name="difficultAirwayPage_3"/>

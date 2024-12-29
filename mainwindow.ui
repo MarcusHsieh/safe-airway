@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1920</width>
+    <height>1280</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
-    <height>600</height>
+    <width>1920</width>
+    <height>1280</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,15 +27,15 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-20</y>
-      <width>800</width>
-      <height>600</height>
+      <y>0</y>
+      <width>1920</width>
+      <height>1280</height>
      </rect>
     </property>
     <property name="maximumSize">
      <size>
-      <width>800</width>
-      <height>600</height>
+      <width>1920</width>
+      <height>1280</height>
      </size>
     </property>
     <property name="font">
@@ -122,12 +122,12 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="DiagnosingPage">
+    <widget class="QWidget" name="TracheostomyPage_1">
      <widget class="QLabel" name="label_1">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
+        <x>60</x>
+        <y>60</y>
         <width>181</width>
         <height>51</height>
        </rect>
@@ -146,21 +146,51 @@
      <widget class="QTableWidget" name="tableWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>761</width>
-        <height>192</height>
+        <x>60</x>
+        <y>200</y>
+        <width>741</width>
+        <height>221</height>
        </rect>
       </property>
-      <property name="font">
-       <font>
-        <family>Comic Sans MS</family>
-        <pointsize>9</pointsize>
-       </font>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="showGrid">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>90</number>
+      </attribute>
+      <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
       <row>
        <property name="text">
         <string notr="true"/>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
        </property>
        <property name="icon">
         <iconset theme="QIcon::ThemeIcon::MailMessageNew"/>
@@ -170,6 +200,13 @@
        <property name="text">
         <string>Trach
 Make/Model</string>
+       </property>
+       <property name="background">
+        <color alpha="0">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
       </column>
       <column>
@@ -222,8 +259,8 @@ Diameter
      <widget class="QLabel" name="patientHas">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>40</y>
+        <x>110</x>
+        <y>90</y>
         <width>181</width>
         <height>51</height>
        </rect>
@@ -236,7 +273,7 @@ Diameter
        </font>
       </property>
       <property name="text">
-       <string>Tracheostomy</string>
+       <string>[ ]</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -290,8 +327,8 @@ Diameter
      <widget class="QLabel" name="patientHas_2">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>280</y>
+        <x>80</x>
+        <y>440</y>
         <width>261</width>
         <height>31</height>
        </rect>
@@ -310,8 +347,8 @@ Diameter
      <widget class="QCheckBox" name="checkBox">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>310</y>
+        <x>50</x>
+        <y>470</y>
         <width>231</width>
         <height>20</height>
        </rect>
@@ -329,8 +366,8 @@ Diameter
      <widget class="QCheckBox" name="checkBox_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>330</y>
+        <x>50</x>
+        <y>490</y>
         <width>471</width>
         <height>41</height>
        </rect>
@@ -375,8 +412,8 @@ Diameter
      <widget class="QLabel" name="patientHas_4">
       <property name="geometry">
        <rect>
-        <x>520</x>
-        <y>320</y>
+        <x>450</x>
+        <y>570</y>
         <width>251</width>
         <height>61</height>
        </rect>
@@ -397,8 +434,8 @@ Diameter
      <widget class="QLabel" name="patientHas_5">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>450</y>
+        <x>130</x>
+        <y>960</y>
         <width>151</width>
         <height>31</height>
        </rect>
@@ -421,8 +458,8 @@ MASK VENTILATE</string>
      <widget class="QLabel" name="patientHas_6">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>480</y>
+        <x>110</x>
+        <y>991</y>
         <width>201</width>
         <height>61</height>
        </rect>
@@ -445,8 +482,8 @@ INTUBATION FROM ABOVE</string>
      <widget class="QLabel" name="patientHas_7">
       <property name="geometry">
        <rect>
-        <x>190</x>
-        <y>480</y>
+        <x>280</x>
+        <y>991</y>
         <width>331</width>
         <height>51</height>
        </rect>
@@ -469,8 +506,8 @@ INTUBATION FROM ABOVE</string>
      <widget class="QLabel" name="patientHas_8">
       <property name="geometry">
        <rect>
-        <x>-10</x>
-        <y>520</y>
+        <x>80</x>
+        <y>1031</y>
         <width>271</width>
         <height>61</height>
        </rect>
@@ -493,8 +530,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_9">
       <property name="geometry">
        <rect>
-        <x>200</x>
-        <y>520</y>
+        <x>290</x>
+        <y>1031</y>
         <width>331</width>
         <height>51</height>
        </rect>
@@ -517,8 +554,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_10">
       <property name="geometry">
        <rect>
-        <x>570</x>
-        <y>460</y>
+        <x>490</x>
+        <y>650</y>
         <width>201</width>
         <height>31</height>
        </rect>
@@ -560,8 +597,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_11">
       <property name="geometry">
        <rect>
-        <x>240</x>
-        <y>300</y>
+        <x>460</x>
+        <y>470</y>
         <width>151</width>
         <height>31</height>
        </rect>
@@ -583,8 +620,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_17">
       <property name="geometry">
        <rect>
-        <x>-10</x>
-        <y>400</y>
+        <x>80</x>
+        <y>910</y>
         <width>141</width>
         <height>61</height>
        </rect>
@@ -606,8 +643,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QTreeWidget" name="treeWidget">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>370</y>
+        <x>90</x>
+        <y>530</y>
         <width>256</width>
         <height>121</height>
        </rect>
@@ -643,31 +680,6 @@ INTUBATION THROUGH STOMA</string>
        </property>
       </item>
      </widget>
-     <widget class="QCheckBox" name="checkBox_3">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>370</y>
-        <width>471</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Comic Sans MS</family>
-        <pointsize>9</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-     </widget>
      <zorder>treeWidget</zorder>
      <zorder>label_1</zorder>
      <zorder>tableWidget</zorder>
@@ -688,8 +700,10 @@ INTUBATION THROUGH STOMA</string>
      <zorder>label_6</zorder>
      <zorder>patientHas_11</zorder>
      <zorder>patientHas_17</zorder>
-     <zorder>checkBox_3</zorder>
     </widget>
+    <widget class="QWidget" name="nTracheostomyPage_2"/>
+    <widget class="QWidget" name="difficultAirwayPage_3"/>
+    <widget class="QWidget" name="LTRPage_4"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -697,7 +711,7 @@ INTUBATION THROUGH STOMA</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1920</width>
      <height>22</height>
     </rect>
    </property>

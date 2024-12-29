@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>nemours_logo.png</file>
+    </qresource>
+</RCC>

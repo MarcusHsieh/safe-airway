@@ -48,7 +48,7 @@
      <bool>true</bool>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Home">
      <widget class="QPushButton" name="pushButton">
@@ -133,7 +133,7 @@
       </attribute>
       <row>
        <property name="text">
-        <string notr="true"> </string>
+        <string notr="true"/>
        </property>
        <property name="textAlignment">
         <set>AlignCenter</set>
@@ -265,9 +265,6 @@ Diameter
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="nTracheostomyPage_2"/>
-    <widget class="QWidget" name="DifficultAirway_3"/>
-    <widget class="QWidget" name="LTRPage_4"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -26,8 +26,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>10</x>
+      <y>-10</y>
       <width>800</width>
       <height>600</height>
      </rect>
@@ -54,17 +54,65 @@
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
-        <x>370</x>
-        <y>270</y>
-        <width>75</width>
-        <height>24</height>
+        <x>260</x>
+        <y>140</y>
+        <width>241</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
-       <string>enter</string>
+       <string>Tracheostomy</string>
       </property>
       <property name="icon">
        <iconset theme="QIcon::ThemeIcon::AppointmentNew"/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>200</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>New Tracheostomy</string>
+      </property>
+      <property name="icon">
+       <iconset theme="QIcon::ThemeIcon::WeatherClear"/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>260</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Difficult Airway</string>
+      </property>
+      <property name="icon">
+       <iconset theme="QIcon::ThemeIcon::EditClear"/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>320</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Laryngotracheal Reconstruction</string>
+      </property>
+      <property name="icon">
+       <iconset theme="QIcon::ThemeIcon::DocumentRevert"/>
       </property>
      </widget>
     </widget>
@@ -72,8 +120,8 @@
      <widget class="QLabel" name="label_1">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>50</y>
+        <x>40</x>
+        <y>20</y>
         <width>181</width>
         <height>51</height>
        </rect>
@@ -109,7 +157,7 @@
       <column>
        <property name="text">
         <string>Trach
-Make/Model</string>
+Make/Model</string>
        </property>
       </column>
       <column>
@@ -162,8 +210,8 @@ Diameter
      <widget class="QLabel" name="patientHas">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>70</y>
+        <x>100</x>
+        <y>60</y>
         <width>181</width>
         <height>51</height>
        </rect>
@@ -176,14 +224,14 @@ Diameter
        </font>
       </property>
       <property name="text">
-       <string>[ ]</string>
+       <string>Tracheostomy</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>10</y>
+        <x>450</x>
+        <y>0</y>
         <width>181</width>
         <height>51</height>
        </rect>
@@ -219,6 +267,126 @@ Diameter
       </property>
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>330</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Cambria</family>
+        <pointsize>11</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>In an Emergency:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_3">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>360</y>
+        <width>251</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Cambria</family>
+        <pointsize>11</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>370</y>
+        <width>231</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Call for HELP and ENT On-Call</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>390</y>
+        <width>471</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Move Glidescope, Anesthesia Cart, and 
+ ENT Airway Cart to Bedside</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>40</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Cambria</family>
+        <pointsize>11</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Indication for Tracheostomy</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="patientHas_4">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>340</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Cambria</family>
+        <pointsize>11</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string> Suction Size: _____________ Fr
+ Suction Depth: _____________ Fr
+ (per RT standard)</string>
       </property>
      </widget>
     </widget>

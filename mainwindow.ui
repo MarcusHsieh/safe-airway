@@ -48,7 +48,7 @@
      <bool>true</bool>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Home">
      <widget class="QPushButton" name="pushButton">
@@ -68,7 +68,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="DiagnosingPage">
+    <widget class="QWidget" name="TracheostomyPage_1">
      <widget class="QLabel" name="label_1">
       <property name="geometry">
        <rect>
@@ -92,15 +92,51 @@
      <widget class="QTableWidget" name="tableWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>120</y>
-        <width>721</width>
-        <height>192</height>
+        <width>751</width>
+        <height>221</height>
        </rect>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="showGrid">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>90</number>
+      </attribute>
+      <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
       <row>
        <property name="text">
-        <string notr="true"/>
+        <string notr="true"> </string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
        </property>
        <property name="icon">
         <iconset theme="QIcon::ThemeIcon::MailMessageNew"/>
@@ -109,7 +145,14 @@
       <column>
        <property name="text">
         <string>Trach
-Make/Model</string>
+Make/Model</string>
+       </property>
+       <property name="background">
+        <color alpha="0">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
       </column>
       <column>
@@ -222,6 +265,9 @@ Diameter
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="nTracheostomyPage_2"/>
+    <widget class="QWidget" name="DifficultAirway_3"/>
+    <widget class="QWidget" name="LTRPage_4"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

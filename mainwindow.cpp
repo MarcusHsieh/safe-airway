@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->pushButton_4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->stackedWidget->setCurrentIndex(0);
+    QFont font = this->font();
+    font.setPointSizeF(font.pointSizeF() * devicePixelRatioF());
+    this->setFont(font);
 }
 
 MainWindow::~MainWindow()

@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
+    QFont font = this->font();
+    font.setPointSizeF(font.pointSizeF() * devicePixelRatioF());
+    this->setFont(font);
 }
 
 MainWindow::~MainWindow()

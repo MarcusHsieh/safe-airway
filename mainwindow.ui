@@ -6,20 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1280</height>
+    <width>1280</width>
+    <height>1024</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1920</width>
-    <height>1280</height>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1280</width>
+     <height>1024</height>
+    </size>
+   </property>
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="enabled">
      <bool>true</bool>
@@ -28,14 +46,20 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1920</width>
-      <height>1280</height>
+      <width>1280</width>
+      <height>720</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="maximumSize">
      <size>
-      <width>1920</width>
-      <height>1280</height>
+      <width>1280</width>
+      <height>1024</height>
      </size>
     </property>
     <property name="font">
@@ -54,72 +78,148 @@
      <bool>true</bool>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Home">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QWidget" name="gridLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>140</y>
-        <width>241</width>
-        <height>51</height>
+        <x>0</x>
+        <y>0</y>
+        <width>1271</width>
+        <height>721</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Tracheostomy</string>
-      </property>
-      <property name="icon">
-       <iconset theme="QIcon::ThemeIcon::AppointmentNew"/>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>200</y>
-        <width>241</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>New Tracheostomy</string>
-      </property>
-      <property name="icon">
-       <iconset theme="QIcon::ThemeIcon::WeatherClear"/>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>260</y>
-        <width>241</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Difficult Airway</string>
-      </property>
-      <property name="icon">
-       <iconset theme="QIcon::ThemeIcon::EditClear"/>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>320</y>
-        <width>241</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Laryngotracheal Reconstruction</string>
-      </property>
-      <property name="icon">
-       <iconset theme="QIcon::ThemeIcon::DocumentRevert"/>
-      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="4" column="1">
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Laryngotracheal Reconstruction</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::DocumentRevert"/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Difficult Airway</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::EditClear"/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Tracheostomy</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::AppointmentNew"/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>New Tracheostomy</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::WeatherClear"/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="TracheostomyPage_1">
@@ -434,8 +534,8 @@ Diameter
      <widget class="QLabel" name="patientHas_5">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>960</y>
+        <x>140</x>
+        <y>730</y>
         <width>151</width>
         <height>31</height>
        </rect>
@@ -458,8 +558,8 @@ MASK VENTILATE</string>
      <widget class="QLabel" name="patientHas_6">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>991</y>
+        <x>90</x>
+        <y>770</y>
         <width>201</width>
         <height>61</height>
        </rect>
@@ -482,8 +582,8 @@ INTUBATION FROM ABOVE</string>
      <widget class="QLabel" name="patientHas_7">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>991</y>
+        <x>290</x>
+        <y>761</y>
         <width>331</width>
         <height>51</height>
        </rect>
@@ -506,8 +606,8 @@ INTUBATION FROM ABOVE</string>
      <widget class="QLabel" name="patientHas_8">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>1031</y>
+        <x>60</x>
+        <y>810</y>
         <width>271</width>
         <height>61</height>
        </rect>
@@ -530,8 +630,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_9">
       <property name="geometry">
        <rect>
-        <x>290</x>
-        <y>1031</y>
+        <x>270</x>
+        <y>810</y>
         <width>331</width>
         <height>51</height>
        </rect>
@@ -620,8 +720,8 @@ INTUBATION THROUGH STOMA</string>
      <widget class="QLabel" name="patientHas_17">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>910</y>
+        <x>90</x>
+        <y>680</y>
         <width>141</width>
         <height>61</height>
        </rect>
@@ -711,10 +811,16 @@ INTUBATION THROUGH STOMA</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1920</width>
+     <width>1280</width>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menutest">
+    <property name="title">
+     <string>test</string>
+    </property>
+   </widget>
+   <addaction name="menutest"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

@@ -18,15 +18,20 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_tracheostomyButton_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_difficultAirwayButton_clicked();
 
-    void on_pushButton_4_clicked();
+    void on_nTracheostomyButton_clicked();
+
+    void on_LTRButton_clicked();
 
 private:
     Ui::MainWindow *ui;
+
+    void resizeEvent(QResizeEvent *event);
+    void updateImage();
+
 };
 #endif // MAINWINDOW_H

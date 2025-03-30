@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>650</height>
+    <width>1066</width>
+    <height>754</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -91,7 +91,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="1" alignment="">
+          <item row="1" column="1">
            <widget class="QPushButton" name="tracheostomyButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -113,7 +113,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" alignment="">
+          <item row="3" column="1">
            <widget class="QPushButton" name="difficultAirwayButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -135,7 +135,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1" alignment="">
+          <item row="5" column="1">
            <widget class="QPushButton" name="LTRButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -170,7 +170,7 @@
             </property>
            </spacer>
           </item>
-          <item row="4" column="1" alignment="">
+          <item row="4" column="1">
            <widget class="QPushButton" name="nTracheostomyButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -374,7 +374,7 @@ Diameter
               <property name="spacing">
                <number>0</number>
               </property>
-              <item row="0" column="0">
+              <item row="1" column="0" alignment="">
                <widget class="QFrame" name="emergencyframe">
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
@@ -386,21 +386,8 @@ Diameter
                  <property name="topMargin">
                   <number>0</number>
                  </property>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="checkBox">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Call for HELP and ENT On-Call</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="inemergency">
+                  <widget class="QLabel" name="emergencyTitle">
                    <property name="font">
                     <font>
                      <family>Comic Sans MS</family>
@@ -409,51 +396,94 @@ Diameter
                     </font>
                    </property>
                    <property name="text">
-                    <string>In an Emergency:</string>
+                    <string>Emergency Scenarios</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QRadioButton" name="decannulationRadioButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Decannulation</string>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                  <item row="2" column="0">
-                  <widget class="QCheckBox" name="checkBox_2">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                    </font>
+                  <widget class="QRadioButton" name="cantVentilateRadioButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>Move Glidescope, Anesthesia Cart, and 
- ENT Airway Cart to Bedside</string>
+                    <string>Can't Ventilate</string>
                    </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>24</width>
-                     <height>24</height>
-                    </size>
-                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="oncall">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
+                 <item row="1" column="0">
+                  <widget class="QRadioButton" name="cantSuctionRadioButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>ENT On-Call [phone]</string>
+                    <string>Can't Suction</string>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   <attribute name="buttonGroup">
+                    <string notr="true">buttonGroup</string>
+                   </attribute>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QRadioButton" name="hemoptysisRadioButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
+                   <property name="text">
+                    <string>Hemoptysis</string>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">buttonGroup</string>
+                   </attribute>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QRadioButton" name="o2SatDropRadioButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>O2 Sat Drop</string>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="1" column="1">
                <widget class="QFrame" name="precautionsframe">
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
@@ -462,8 +492,8 @@ Diameter
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="4" column="2">
-                  <widget class="QLabel" name="patientHas_9">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="precautionsTitle">
                    <property name="font">
                     <font>
                      <family>Comic Sans MS</family>
@@ -472,79 +502,7 @@ Diameter
                     </font>
                    </property>
                    <property name="text">
-                    <string>[IF YES]
- [Size in CM] ETT [WITH/WITHOUT] CUFF</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="patientHas_8">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>[YES OR NO]
-INTUBATION THROUGH STOMA</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="1">
-                  <widget class="QLabel" name="patientHas_7">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>[IF YES]
- [Size in CM] ETT [WITH/WITHOUT] CUFF</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="patientHas_6">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>[YES OR NO]
-INTUBATION FROM ABOVE</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" alignment="">
-                  <widget class="QLabel" name="patientHas_17">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Precautions</string>
+                    <string>Precautions &amp; Equipment</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -552,20 +510,24 @@ INTUBATION FROM ABOVE</string>
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QLabel" name="patientHas_5">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
+                  <widget class="QTextEdit" name="precautionsTextBox">
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
                    </property>
-                   <property name="text">
-                    <string>[YES OR NO]
-MASK VENTILATE</string>
+                   <property name="frameShape">
+                    <enum>QFrame::Shape::NoFrame</enum>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   <property name="lineWidth">
+                    <number>1</number>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -620,19 +582,58 @@ MASK VENTILATE</string>
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_8">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="patientHas_4">
-                   <property name="font">
-                    <font>
-                     <family>Comic Sans MS</family>
-                     <pointsize>9</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
+                 <item row="2" column="3">
+                  <widget class="QLabel" name="label_7">
                    <property name="text">
-                    <string> Suction Size: _____________ Fr
- Suction Depth: _____________ Fr
- (per RT standard)</string>
+                    <string>Fr</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>Fr</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>Suction Depth:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="lineEdit_5">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Suction Size:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="lineEdit_4">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>(per RT standard)</string>
                    </property>
                   </widget>
                  </item>
@@ -651,7 +652,43 @@ MASK VENTILATE</string>
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_17">
-                 <item row="0" column="0" alignment="">
+                 <item row="5" column="0">
+                  <layout class="QFormLayout" name="formLayout">
+                   <property name="labelAlignment">
+                    <set>Qt::AlignmentFlag::AlignJustify|Qt::AlignmentFlag::AlignVCenter</set>
+                   </property>
+                   <property name="formAlignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="cancelButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Cancel/Return home</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QPushButton" name="saveExitButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Save &amp;&amp; Exit</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
                   <widget class="QLabel" name="patientHas_10">
                    <property name="font">
                     <font>
@@ -668,7 +705,7 @@ MASK VENTILATE</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
+                 <item row="2" column="0">
                   <widget class="QTextEdit" name="textEdit"/>
                  </item>
                 </layout>
@@ -680,7 +717,7 @@ MASK VENTILATE</string>
           </layout>
          </widget>
         </item>
-        <item row="0" column="0" alignment="">
+        <item row="0" column="0">
          <widget class="QFrame" name="topframe">
           <property name="frameShape">
            <enum>QFrame::Shape::StyledPanel</enum>
@@ -728,7 +765,7 @@ MASK VENTILATE</string>
               <property name="spacing">
                <number>1</number>
               </property>
-              <item row="1" column="0" alignment="">
+              <item row="1" column="0">
                <widget class="QFrame" name="diagnonseframe">
                 <property name="frameShape">
                  <enum>QFrame::Shape::NoFrame</enum>
@@ -768,7 +805,7 @@ MASK VENTILATE</string>
                 </layout>
                </widget>
               </item>
-              <item row="0" column="0" alignment="">
+              <item row="0" column="0">
                <widget class="QFrame" name="logoframe">
                 <property name="maximumSize">
                  <size>
@@ -795,7 +832,7 @@ MASK VENTILATE</string>
                  <property name="spacing">
                   <number>6</number>
                  </property>
-                 <item row="0" column="1" alignment="">
+                 <item row="0" column="1">
                   <widget class="QLabel" name="logoLabel">
                    <property name="maximumSize">
                     <size>
@@ -871,7 +908,7 @@ MASK VENTILATE</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" alignment="">
+              <item row="1" column="1">
                <widget class="QLineEdit" name="lineEdit"/>
               </item>
               <item row="0" column="1">
@@ -899,4 +936,7 @@ MASK VENTILATE</string>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

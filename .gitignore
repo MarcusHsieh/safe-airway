@@ -1,0 +1,141 @@
+# Qt-related
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+*.exp
+*.lib
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.idb
+*.pch
+*.res
+*.rc
+*.tlb
+*.def
+*.manifest
+*.cache
+*.suo
+*.sln.docstates
+*.user
+*.ncb
+*.aps
+*.plg
+*.opt
+*.clw
+*.positions
+*.depends
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Build directories
+build/
+build-*/
+debug/
+release/
+Debug/
+Release/
+x64/
+x86/
+Win32/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+Makefile.*
+*.cbp
+*.vcxproj*
+*.sln
+
+# Qt Creator
+*.autosave
+*.qmlc
+*.jsc
+*.pro.user*
+*.pri.user*
+
+# Qt MOC/UI/RCC generated files
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Qt qmake
+*.qmake.stash
+
+# Platform specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Custom build artifacts
+images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.ico

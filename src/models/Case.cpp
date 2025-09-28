@@ -151,7 +151,8 @@ QJsonObject Case::toJson() const
     json["procedure"] = procedure;
     json["extubationDate"] = extubationDate;
     json["trachIndication"] = trachIndication;
-    
+    // Note: filePath is not saved to JSON to avoid circular references
+
     return json;
 }
 
@@ -181,6 +182,7 @@ Case Case::fromJson(const QJsonObject& json)
     case_.procedure = json["procedure"].toString();
     case_.extubationDate = json["extubationDate"].toString();
     case_.trachIndication = json["trachIndication"].toString();
-    
+    // Note: filePath is set by CaseManager after loading
+
     return case_;
 }

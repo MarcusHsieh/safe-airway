@@ -112,7 +112,10 @@ public:
     
     QString getTrachIndication() const { return trachIndication; }
     void setTrachIndication(const QString& indication) { trachIndication = indication; }
-    
+
+    QString getFilePath() const { return filePath; }
+    void setFilePath(const QString& path) { filePath = path; }
+
     QJsonObject toJson() const;
     static Case fromJson(const QJsonObject& json);
     
@@ -135,6 +138,7 @@ private:
     QString procedure;
     QString extubationDate;
     QString trachIndication;
+    QString filePath;
 };
 
 #endif // CASE_H

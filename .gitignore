@@ -50,6 +50,7 @@ Release/
 x64/
 x86/
 Win32/
+test_build/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -130,12 +131,12 @@ Thumbs.db
 *.bak
 *.backup
 
-# Custom build artifacts
-images/
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.bmp
-*.svg
-*.ico
+# Distribution folder
+safe-airway-dist/
+
+# NUL file that sometimes appears on Windows
+NUL
+
+# Additional Qt generated files
+moc_predefs.h
+object_script.*

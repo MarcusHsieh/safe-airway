@@ -2,7 +2,7 @@
 #define EMERGENCYPANEL_H
 
 #include <QWidget>
-#include <QRadioButton>
+#include <QPushButton>
 #include <QTextEdit>
 #include <QTextOption>
 #include <QButtonGroup>
@@ -41,11 +41,11 @@ private slots:
 
 private:
     QButtonGroup* scenarioGroup_;
-    QRadioButton* cantSuctionButton_;
-    QRadioButton* cantVentilateButton_;
-    QRadioButton* o2SatDropButton_;
-    QRadioButton* decannulationButton_;
-    QRadioButton* hemoptysisButton_;
+    QPushButton* cantSuctionButton_;
+    QPushButton* cantVentilateButton_;
+    QPushButton* o2SatDropButton_;
+    QPushButton* decannulationButton_;
+    QPushButton* hemoptysisButton_;
     
     QTextEdit* instructionsEdit_;
     QLabel* titleLabel_;

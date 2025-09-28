@@ -1,5 +1,7 @@
 #include "PatientInfoWidget.h"
 #include "utils/StyleManager.h"
+#include <QGuiApplication>
+#include <QScreen>
 
 PatientInfoWidget::PatientInfoWidget(QWidget* parent)
     : QWidget(parent)
@@ -21,41 +23,55 @@ PatientInfoWidget::PatientInfoWidget(QWidget* parent)
 void PatientInfoWidget::setupUI()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setSpacing(10);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    
+    // Use percentage-based spacing and margins
+    QSize screenSize = QGuiApplication::primaryScreen()->availableSize();
+    int spacing = screenSize.height() * 0.01; // 1% of screen height
+    int margin = screenSize.width() * 0.01; // 1% of screen width
+    
+    mainLayout->setSpacing(spacing);
+    mainLayout->setContentsMargins(margin, margin, margin, margin);
     
     QHBoxLayout* nameLayout = new QHBoxLayout();
     nameLayout->setSpacing(15);
-    firstNameLabel_ = new QLabel("First:");
-    firstNameLabel_->setMinimumWidth(100);
+    firstNameLabel_ = new QLabel("Name:");
+    // Use percentage-based sizing for patient name field
+    int labelWidth = screenSize.width() * 0.08; // 8% of screen width
+    int fieldHeight = screenSize.height() * 0.05; // 5% of screen height
+    firstNameLabel_->setMinimumWidth(labelWidth);
     firstNameEdit_ = new QLineEdit();
-    firstNameEdit_->setMinimumHeight(30);
-    firstNameEdit_->setPlaceholderText("Patient's first name");
+    firstNameEdit_->setMinimumHeight(fieldHeight);
+    firstNameEdit_->setPlaceholderText("First name");
     nameLayout->addWidget(firstNameLabel_);
     nameLayout->addWidget(firstNameEdit_);
     
+    // Hide last name from UI but keep in backend for data persistence
     lastNameLabel_ = new QLabel("Last:");
     lastNameLabel_->setMinimumWidth(100);
     lastNameEdit_ = new QLineEdit();
     lastNameEdit_->setMinimumHeight(30);
     lastNameEdit_->setPlaceholderText("Patient's last name");
-    nameLayout->addWidget(lastNameLabel_);
-    nameLayout->addWidget(lastNameEdit_);
+    // Don't add to layout - keep hidden for HIPAA compliance
+    // nameLayout->addWidget(lastNameLabel_);
+    // nameLayout->addWidget(lastNameEdit_);
     
     QHBoxLayout* infoLayout = new QHBoxLayout();
     infoLayout->setSpacing(15);
+    
+    // Hide MRN from UI but keep in backend for data persistence
     mrnLabel_ = new QLabel("MRN:");
     mrnLabel_->setMinimumWidth(100);
     mrnEdit_ = new QLineEdit();
     mrnEdit_->setMinimumHeight(30);
     mrnEdit_->setPlaceholderText("Medical Record #");
-    infoLayout->addWidget(mrnLabel_);
-    infoLayout->addWidget(mrnEdit_);
+    // Don't add to layout - keep hidden for HIPAA compliance
+    // infoLayout->addWidget(mrnLabel_);
+    // infoLayout->addWidget(mrnEdit_);
     
-    dobLabel_ = new QLabel("DoB:");
-    dobLabel_->setMinimumWidth(100);
+    dobLabel_ = new QLabel("Date of Birth:");
+    dobLabel_->setMinimumWidth(labelWidth);
     dobEdit_ = new QLineEdit();
-    dobEdit_->setMinimumHeight(30);
+    dobEdit_->setMinimumHeight(fieldHeight);
     dobEdit_->setPlaceholderText("MM/DD/YYYY");
     infoLayout->addWidget(dobLabel_);
     infoLayout->addWidget(dobEdit_);
@@ -79,14 +95,20 @@ void PatientInfoWidget::updateStyles()
     StyleManager& styleManager = StyleManager::instance();
     
     QFont bodyFont = styleManager.getBodyFont();
-    firstNameLabel_->setFont(bodyFont);
-    lastNameLabel_->setFont(bodyFont);
-    mrnLabel_->setFont(bodyFont);
-    dobLabel_->setFont(bodyFont);
+    QFont patientNameFont = styleManager.getPatientNameFont();
     
-    firstNameEdit_->setFont(bodyFont);
+    // Patient name should be extra large for visibility
+    firstNameLabel_->setFont(patientNameFont);
+    
+    // Make the input text even larger using stylesheet to override form styles
+    firstNameEdit_->setStyleSheet("QLineEdit { font-size: 60px; }");
+    
+    // Other fields use regular font (but they're hidden anyway)
+    lastNameLabel_->setFont(bodyFont);
     lastNameEdit_->setFont(bodyFont);
+    mrnLabel_->setFont(bodyFont);
     mrnEdit_->setFont(bodyFont);
+    dobLabel_->setFont(bodyFont);
     dobEdit_->setFont(bodyFont);
 }
 

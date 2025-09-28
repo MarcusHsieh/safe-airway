@@ -51,12 +51,14 @@ signals:
     void formChanged();
     void emergencyScenarioChanged(const QString& scenario);
     void backRequested();
+    void displayModeRequested();
 
 protected slots:
     void onSaveClicked();
     void onFreezeClicked();
     void onPrintClicked();
     void onBackClicked();
+    void onDisplayModeClicked();
     void onPatientInfoChanged();
     void onEmergencyScenarioSelected(const QString& scenario);
     void onSuctionSizeChanged(int size);
@@ -83,6 +85,7 @@ protected:
     Case currentCase_;
     bool frozen_;
     bool justSaved_;
+    QSize screenSize_;
     
     QScrollArea* scrollArea_;
     QWidget* contentWidget_;
@@ -118,6 +121,7 @@ protected:
     QPushButton* saveButton_;
     QPushButton* printButton_;
     QPushButton* backButton_;
+    QPushButton* displayModeButton_;
     
     void connectSignals();
     void loadFormData();

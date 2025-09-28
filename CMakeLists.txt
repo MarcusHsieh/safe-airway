@@ -31,14 +31,20 @@ set(SOURCES
     src/models/EmergencyScenario.cpp
     src/utils/ConfigManager.cpp
     src/utils/StyleManager.cpp
+    src/utils/SATrachTube.cpp
     src/views/MainWindow.cpp
     src/views/CaseSelectionView.cpp
     src/views/TracheostomyFormView.cpp
     src/views/NewTracheostomyFormView.cpp
     src/views/DifficultAirwayFormView.cpp
     src/views/LTRFormView.cpp
+    src/views/BaseDisplayView.cpp
+    src/views/TracheostomyDisplayView.cpp
+    src/views/NewTracheostomyDisplayView.cpp
     src/widgets/BaseFormWidget.cpp
     src/widgets/EmergencyPanel.cpp
+    src/widgets/EscOverlayMenu.cpp
+    src/widgets/NotificationWidget.cpp
     src/widgets/PatientInfoWidget.cpp
     src/widgets/TextWrapDelegate.cpp
 )
@@ -51,14 +57,20 @@ set(HEADERS
     src/models/EmergencyScenario.h
     src/utils/ConfigManager.h
     src/utils/StyleManager.h
+    src/utils/SATrachTube.h
     src/views/MainWindow.h
     src/views/CaseSelectionView.h
     src/views/TracheostomyFormView.h
     src/views/NewTracheostomyFormView.h
     src/views/DifficultAirwayFormView.h
     src/views/LTRFormView.h
+    src/views/BaseDisplayView.h
+    src/views/TracheostomyDisplayView.h
+    src/views/NewTracheostomyDisplayView.h
     src/widgets/BaseFormWidget.h
     src/widgets/EmergencyPanel.h
+    src/widgets/EscOverlayMenu.h
+    src/widgets/NotificationWidget.h
     src/widgets/PatientInfoWidget.h
     src/widgets/TextWrapDelegate.h
 )

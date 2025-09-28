@@ -24,15 +24,18 @@ void EmergencyPanel::setupUI()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     
-    titleLabel_ = new QLabel("EMERGENCY SCENARIOS");
-    titleLabel_->setAlignment(Qt::AlignCenter);
-    titleLabel_->setObjectName("emergencyTitle");
-    mainLayout->addWidget(titleLabel_);
-    
     // Create horizontal layout for scenario selection and instructions side by side
     QHBoxLayout* contentLayout = new QHBoxLayout();
     
-    // Left side: Emergency type selection
+    // Left side: Emergency scenarios column
+    QVBoxLayout* leftColumnLayout = new QVBoxLayout();
+    
+    titleLabel_ = new QLabel("EMERGENCY\nSCENARIOS");
+    titleLabel_->setAlignment(Qt::AlignCenter);
+    titleLabel_->setObjectName("emergencyTitle");
+    titleLabel_->setWordWrap(true);
+    leftColumnLayout->addWidget(titleLabel_);
+    
     scenarioGroupBox_ = new QGroupBox("Select Type:");
     scenarioGroupBox_->setMinimumHeight(150);
     scenarioGroupBox_->setMaximumWidth(250);
@@ -43,23 +46,34 @@ void EmergencyPanel::setupUI()
     
     scenarioGroup_ = new QButtonGroup(this);
     
-    cantSuctionButton_ = new QRadioButton("Can't Suction");
-    cantVentilateButton_ = new QRadioButton("Can't Ventilate");
-    o2SatDropButton_ = new QRadioButton("O2 Sat Drop");
-    decannulationButton_ = new QRadioButton("Decannulation");
-    hemoptysisButton_ = new QRadioButton("Hemoptysis");
+    cantSuctionButton_ = new QPushButton("Can't Suction");
+    cantVentilateButton_ = new QPushButton("Can't Ventilate");
+    o2SatDropButton_ = new QPushButton("O2 Sat Drop");
+    decannulationButton_ = new QPushButton("Decannulation");
+    hemoptysisButton_ = new QPushButton("Hemoptysis");
     
-    cantSuctionButton_->setMinimumHeight(20);
-    cantVentilateButton_->setMinimumHeight(20);
-    o2SatDropButton_->setMinimumHeight(20);
-    decannulationButton_->setMinimumHeight(20);
-    hemoptysisButton_->setMinimumHeight(20);
+    // Make buttons checkable so they can be toggled
+    cantSuctionButton_->setCheckable(true);
+    cantVentilateButton_->setCheckable(true);
+    o2SatDropButton_->setCheckable(true);
+    decannulationButton_->setCheckable(true);
+    hemoptysisButton_->setCheckable(true);
+    
+    // Set minimum height for better visibility
+    cantSuctionButton_->setMinimumHeight(40);
+    cantVentilateButton_->setMinimumHeight(40);
+    o2SatDropButton_->setMinimumHeight(40);
+    decannulationButton_->setMinimumHeight(40);
+    hemoptysisButton_->setMinimumHeight(40);
     
     scenarioGroup_->addButton(cantSuctionButton_, 0);
     scenarioGroup_->addButton(cantVentilateButton_, 1);
     scenarioGroup_->addButton(o2SatDropButton_, 2);
     scenarioGroup_->addButton(decannulationButton_, 3);
     scenarioGroup_->addButton(hemoptysisButton_, 4);
+    
+    // Make button group exclusive (only one can be selected at a time)
+    scenarioGroup_->setExclusive(true);
     
     scenarioLayout->addWidget(cantSuctionButton_);
     scenarioLayout->addWidget(cantVentilateButton_);
@@ -68,19 +82,22 @@ void EmergencyPanel::setupUI()
     scenarioLayout->addWidget(hemoptysisButton_);
     scenarioLayout->addStretch();
     
-    contentLayout->addWidget(scenarioGroupBox_);
+    leftColumnLayout->addWidget(scenarioGroupBox_);
+    leftColumnLayout->addStretch();
+    
+    contentLayout->addLayout(leftColumnLayout);
     
     // Right side: Emergency instructions
     QVBoxLayout* instructionsLayout = new QVBoxLayout();
     QLabel* instructionsLabel = new QLabel("Emergency Instructions:");
-    instructionsLabel->setFont(StyleManager::instance().getEmergencyFont());
+    instructionsLabel->setFont(StyleManager::instance().getEmergencyLabelFont());
     instructionsLayout->addWidget(instructionsLabel);
     
     instructionsEdit_ = new QTextEdit();
     instructionsEdit_->setReadOnly(true);
-    instructionsEdit_->setMinimumHeight(350);  // Increased height
-    instructionsEdit_->setMaximumHeight(400);  // Increased max height
-    instructionsEdit_->setMinimumWidth(300);   // Ensure adequate width
+    instructionsEdit_->setMinimumHeight(450);  // Increased height for more space
+    instructionsEdit_->setMaximumHeight(500);  // Increased max height
+    instructionsEdit_->setMinimumWidth(400);   // Increased width for better readability
     instructionsEdit_->setWordWrapMode(QTextOption::WordWrap);
     instructionsEdit_->setPlaceholderText("Select an emergency scenario to view instructions.");
     instructionsLayout->addWidget(instructionsEdit_);
@@ -101,20 +118,31 @@ void EmergencyPanel::updateStyles()
 {
     StyleManager::instance().applyEmergencyStyle(this);
     
-    QFont emergencyFont = StyleManager::instance().getEmergencyFont();
-    titleLabel_->setFont(emergencyFont);
+    // Apply specific fonts for each emergency panel element
+    titleLabel_->setFont(StyleManager::instance().getEmergencyTitleFont());
     
-    cantSuctionButton_->setFont(emergencyFont);
-    cantVentilateButton_->setFont(emergencyFont);
-    o2SatDropButton_->setFont(emergencyFont);
-    decannulationButton_->setFont(emergencyFont);
-    hemoptysisButton_->setFont(emergencyFont);
+    // Apply emergency radio font to the push buttons
+    cantSuctionButton_->setFont(StyleManager::instance().getEmergencyRadioFont());
+    cantVentilateButton_->setFont(StyleManager::instance().getEmergencyRadioFont());
+    o2SatDropButton_->setFont(StyleManager::instance().getEmergencyRadioFont());
+    decannulationButton_->setFont(StyleManager::instance().getEmergencyRadioFont());
+    hemoptysisButton_->setFont(StyleManager::instance().getEmergencyRadioFont());
     
-    instructionsEdit_->setFont(StyleManager::instance().getBodyFont());
+    instructionsEdit_->setFont(StyleManager::instance().getEmergencyInstructionsFont());
 }
 
 void EmergencyPanel::setSelectedScenario(const QString& scenarioName)
 {
+    // Clear all selections first
+    scenarioGroup_->setExclusive(false);
+    cantSuctionButton_->setChecked(false);
+    cantVentilateButton_->setChecked(false);
+    o2SatDropButton_->setChecked(false);
+    decannulationButton_->setChecked(false);
+    hemoptysisButton_->setChecked(false);
+    scenarioGroup_->setExclusive(true);
+    
+    // Set the selected scenario
     if (scenarioName == "can't suction") {
         cantSuctionButton_->setChecked(true);
     } else if (scenarioName == "can't ventilate") {

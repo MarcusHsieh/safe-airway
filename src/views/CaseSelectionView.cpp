@@ -39,20 +39,31 @@ void CaseSelectionView::setupUI()
     titleLabel_->setFont(StyleManager::instance().getHeaderFont());
     mainLayout_->addWidget(titleLabel_);
     
+    // Create a container widget for the logo to ensure proper centering
+    QWidget* logoContainer = new QWidget();
+    QHBoxLayout* logoLayout = new QHBoxLayout(logoContainer);
+    logoLayout->setContentsMargins(0, 0, 0, 0);
+    
     logoLabel_ = new QLabel();
     logoLabel_->setAlignment(Qt::AlignCenter);
-    logoLabel_->setMaximumHeight(100);
-    logoLabel_->setScaledContents(true);
+    logoLabel_->setMaximumHeight(150);
+    logoLabel_->setMaximumWidth(500);
     
-    // Load and set the Nemours logo
-    QPixmap logo(":/images/nemours-logo.png");
+    // Load and set the Nemours full logo
+    QPixmap logo(":/images/nemours-logo-full.png");
     if (!logo.isNull()) {
-        logoLabel_->setPixmap(logo.scaled(200, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        logoLabel_->setPixmap(logo.scaled(500, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     } else {
         logoLabel_->setText("Nemours Children's Health");
         logoLabel_->setStyleSheet("font-weight: bold; color: #0066CC; font-size: 16px;");
     }
-    mainLayout_->addWidget(logoLabel_);
+    
+    // Add stretchers to center the logo horizontally
+    logoLayout->addStretch();
+    logoLayout->addWidget(logoLabel_);
+    logoLayout->addStretch();
+    
+    mainLayout_->addWidget(logoContainer);
     
     QHBoxLayout* contentLayout = new QHBoxLayout();
     

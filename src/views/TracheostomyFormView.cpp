@@ -2,6 +2,8 @@
 #include "utils/StyleManager.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGuiApplication>
+#include <QScreen>
 
 TracheostomyFormView::TracheostomyFormView(QWidget* parent)
     : BaseFormWidget(CaseType::Tracheostomy, parent)
@@ -13,14 +15,24 @@ TracheostomyFormView::TracheostomyFormView(QWidget* parent)
 
 void TracheostomyFormView::setupFormSpecificFields()
 {
-    specificFieldsGroup_ = new QGroupBox("Tracheostomy Specific Information");
+    specificFieldsGroup_ = new QGroupBox("Tracheostomy Information");
+    specificFieldsGroup_->setFont(StyleManager::instance().getGroupBoxFont());
     QVBoxLayout* groupLayout = new QVBoxLayout(specificFieldsGroup_);
     
     QHBoxLayout* indicationLayout = new QHBoxLayout();
     trachIndicationLabel_ = new QLabel("Trach Indication:");
-    trachIndicationLabel_->setMinimumWidth(120);
+    // Use percentage-based sizing for trach indication field
+    QSize screenSize = QGuiApplication::primaryScreen()->availableSize();
+    int labelWidth = screenSize.width() * 0.10; // 10% of screen width
+    int fieldHeight = screenSize.height() * 0.04; // 4% of screen height
+    
+    trachIndicationLabel_->setMinimumWidth(labelWidth);
+    trachIndicationLabel_->setFont(StyleManager::instance().getFormLabelFont());
+    
     trachIndicationEdit_ = new QLineEdit();
     trachIndicationEdit_->setPlaceholderText("Enter tracheostomy indication");
+    trachIndicationEdit_->setMinimumHeight(fieldHeight);
+    trachIndicationEdit_->setFont(StyleManager::instance().getFormInputFont());
     
     indicationLayout->addWidget(trachIndicationLabel_);
     indicationLayout->addWidget(trachIndicationEdit_);

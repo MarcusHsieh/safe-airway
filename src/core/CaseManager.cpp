@@ -67,23 +67,33 @@ void CaseManager::createDirectoryStructure()
 
 QString CaseManager::saveCase(const Case& case_)
 {
-    QString filename = generateCaseFilename(case_);
-    QString typeDir = getCaseTypeDirectory(case_.getCaseType());
-    QString filePath = typeDir + "/" + filename;
-    
+    QString filePath;
+
+    // Check if this is an existing case with a known file path
+    QString existingPath = case_.getFilePath();
+    if (!existingPath.isEmpty() && QFile::exists(existingPath)) {
+        // Use existing file path to overwrite
+        filePath = existingPath;
+    } else {
+        // Generate new filename for new cases
+        QString filename = generateCaseFilename(case_);
+        QString typeDir = getCaseTypeDirectory(case_.getCaseType());
+        filePath = typeDir + "/" + filename;
+    }
+
     QJsonDocument doc(case_.toJson());
-    
+
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         emit error("Failed to save case: " + file.errorString());
         return QString();
     }
-    
+
     file.write(doc.toJson());
     file.close();
-    
+
     updateRecentCases(filePath);
-    
+
     emit caseSaved(filePath);
     return filePath;
 }
@@ -106,9 +116,10 @@ bool CaseManager::loadCase(const QString& filePath, Case& case_)
     }
     
     case_ = Case::fromJson(doc.object());
-    
+    case_.setFilePath(filePath);  // Set the file path after loading
+
     updateRecentCases(filePath);
-    
+
     emit caseLoaded(filePath);
     return true;
 }
@@ -209,12 +220,10 @@ QString CaseManager::getCaseDirectory(CaseType caseType) const
 
 QString CaseManager::generateCaseFilename(const Case& case_) const
 {
-    QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+    // Use only the case ID for consistent filenames (no timestamp)
+    // This ensures the same case always has the same filename
     QString id = case_.getId();
-    if (id.length() > 8) {
-        id = id.left(8);
-    }
-    return QString("%1_%2.json").arg(timestamp).arg(id);
+    return QString("%1.json").arg(id);
 }
 
 QString CaseManager::getCaseTypeDirectory(CaseType caseType) const

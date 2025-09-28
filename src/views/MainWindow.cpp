@@ -5,6 +5,8 @@
 #include "DifficultAirwayFormView.h"
 #include "LTRFormView.h"
 #include "widgets/BaseFormWidget.h"
+#include "widgets/NotificationWidget.h"
+#include "widgets/EscOverlayMenu.h"
 #include "core/Application.h"
 #include "core/CaseManager.h"
 #include "utils/StyleManager.h"
@@ -14,6 +16,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QKeyEvent>
 #include <QApplication>
 
 MainWindow::MainWindow(QWidget* parent)
@@ -25,8 +28,8 @@ MainWindow::MainWindow(QWidget* parent)
     , difficultAirwayFormView_(nullptr)
     , ltrFormView_(nullptr)
     , menuBar_(nullptr)
-    , statusBar_(nullptr)
-    , statusLabel_(nullptr)
+    , notificationWidget_(nullptr)
+    , escOverlayMenu_(nullptr)
     , autoSaveTimer_(nullptr)
     , caseManager_(nullptr)
     , hasUnsavedChanges_(false)
@@ -35,13 +38,17 @@ MainWindow::MainWindow(QWidget* parent)
     
     setupUI();
     setupMenuBar();
-    setupStatusBar();
+    setupNotifications();
+    setupEscOverlay();
     setupConnections();
     setupAutoSave();
-    
+
+    // Set minimum window size for proper scaling on Surface Pro 8
+    setMinimumSize(1200, 800);
+
     showCaseSelectionView();
     updateWindowTitle();
-    updateStatusBar("Ready");
+    showNotification("Ready");
     
     QSize windowSize;
     QPoint windowPosition;
@@ -49,8 +56,8 @@ MainWindow::MainWindow(QWidget* parent)
     resize(windowSize);
     move(windowPosition);
     
-    // Start in fullscreen mode by default for Surface Pro 8
-    showFullScreen();
+    // Use maximized mode instead of fullscreen for better Surface Pro 8 compatibility
+    showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -87,6 +94,9 @@ void MainWindow::setupUI()
 void MainWindow::setupMenuBar()
 {
     menuBar_ = menuBar();
+    
+    // Hide the menu bar since we're using ESC overlay instead
+    menuBar_->hide();
     
     QMenu* fileMenu = menuBar_->addMenu("&File");
     
@@ -142,11 +152,14 @@ void MainWindow::setupMenuBar()
     helpMenu->addAction(aboutAction);
 }
 
-void MainWindow::setupStatusBar()
+void MainWindow::setupNotifications()
 {
-    statusBar_ = statusBar();
-    statusLabel_ = new QLabel();
-    statusBar_->addWidget(statusLabel_);
+    notificationWidget_ = new NotificationWidget(this);
+}
+
+void MainWindow::setupEscOverlay()
+{
+    escOverlayMenu_ = new EscOverlayMenu(this);
 }
 
 void MainWindow::setupConnections()
@@ -173,8 +186,19 @@ void MainWindow::setupConnections()
     connect(caseManager_, &CaseManager::caseSaved, this, &MainWindow::onCaseSaved);
     connect(caseManager_, &CaseManager::error, this, [this](const QString& message) {
         QMessageBox::critical(this, "Error", message);
-        updateStatusBar("Error: " + message);
+        showErrorNotification("Error: " + message);
     });
+    
+    // ESC Overlay Menu connections
+    connect(escOverlayMenu_, &EscOverlayMenu::newCaseRequested, this, &MainWindow::onOverlayNewCaseRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::openCaseRequested, this, &MainWindow::onOverlayOpenCaseRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::saveRequested, this, &MainWindow::onOverlaySaveRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::saveAsRequested, this, &MainWindow::onOverlaySaveAsRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::increaseFontRequested, this, &MainWindow::onOverlayIncreaseFontRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::decreaseFontRequested, this, &MainWindow::onOverlayDecreaseFontRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::resetFontRequested, this, &MainWindow::onOverlayResetFontRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::aboutRequested, this, &MainWindow::onOverlayAboutRequested);
+    connect(escOverlayMenu_, &EscOverlayMenu::exitRequested, this, &MainWindow::onOverlayExitRequested);
 }
 
 void MainWindow::setupAutoSave()
@@ -236,7 +260,8 @@ void MainWindow::onNewCaseRequested(CaseType caseType)
         }
     }
     
-    Case newCase(QString(), caseType);
+    Case newCase;  // Use default constructor to generate UUID
+    newCase.setCaseType(caseType);
     currentFilePath_.clear();
     setUnsavedChanges(false);
     
@@ -256,7 +281,7 @@ void MainWindow::onNewCaseRequested(CaseType caseType)
     }
     
     showFormView(caseType);
-    updateStatusBar("New case created");
+    showSuccessNotification("New case created");
 }
 
 void MainWindow::onExistingCaseSelected(const QString& filePath)
@@ -272,7 +297,7 @@ void MainWindow::onCaseSaved(const QString& filePath)
 {
     currentFilePath_ = filePath;
     setUnsavedChanges(false);
-    updateStatusBar("Case saved successfully");
+    showSuccessNotification("Case saved successfully");
     updateWindowTitle();
 }
 
@@ -325,7 +350,7 @@ void MainWindow::onAutoSaveTimer()
 {
     if (hasUnsavedChanges_ && !currentFilePath_.isEmpty()) {
         saveCurrentCase();
-        updateStatusBar("Auto-saved");
+        showNotification("Auto-saved");
     }
 }
 
@@ -336,10 +361,11 @@ void MainWindow::loadCase(const QString& filePath)
         QMessageBox::critical(this, "Error", "Failed to load case from: " + filePath);
         return;
     }
-    
+
     currentFilePath_ = filePath;
+    case_.setFilePath(filePath);  // Set the file path in the case
     setUnsavedChanges(false);
-    
+
     switch (case_.getCaseType()) {
     case CaseType::Tracheostomy:
         tracheostomyFormView_->setCase(case_);
@@ -354,18 +380,18 @@ void MainWindow::loadCase(const QString& filePath)
         ltrFormView_->setCase(case_);
         break;
     }
-    
+
     showFormView(case_.getCaseType());
-    updateStatusBar("Case loaded successfully");
+    showSuccessNotification("Case loaded successfully");
 }
 
 void MainWindow::saveCurrentCase()
 {
     QWidget* currentWidget = stackedWidget_->currentWidget();
     if (!currentWidget) return;
-    
+
     Case case_;
-    
+
     if (currentWidget == tracheostomyFormView_) {
         case_ = tracheostomyFormView_->getCase();
     } else if (currentWidget == newTracheostomyFormView_) {
@@ -377,10 +403,23 @@ void MainWindow::saveCurrentCase()
     } else {
         return;
     }
-    
+
     QString filePath = caseManager_->saveCase(case_);
     if (!filePath.isEmpty()) {
         currentFilePath_ = filePath;
+        // Ensure the case has the correct filePath for future saves
+        case_.setFilePath(filePath);
+
+        // Update the case in the form views with the filePath
+        if (currentWidget == tracheostomyFormView_) {
+            tracheostomyFormView_->setCase(case_);
+        } else if (currentWidget == newTracheostomyFormView_) {
+            newTracheostomyFormView_->setCase(case_);
+        } else if (currentWidget == difficultAirwayFormView_) {
+            difficultAirwayFormView_->setCase(case_);
+        } else if (currentWidget == ltrFormView_) {
+            ltrFormView_->setCase(case_);
+        }
         setUnsavedChanges(false);
         updateWindowTitle();
     }
@@ -418,7 +457,7 @@ bool MainWindow::saveAsCase()
         currentFilePath_ = fileName;
         setUnsavedChanges(false);
         updateWindowTitle();
-        updateStatusBar("Case saved as: " + fileName);
+        showSuccessNotification("Case saved as: " + fileName);
         return true;
     }
     
@@ -441,9 +480,25 @@ void MainWindow::updateWindowTitle()
     setWindowTitle(title);
 }
 
-void MainWindow::updateStatusBar(const QString& message)
+void MainWindow::showNotification(const QString& message)
 {
-    statusLabel_->setText(message);
+    if (notificationWidget_) {
+        notificationWidget_->showNotification(message);
+    }
+}
+
+void MainWindow::showErrorNotification(const QString& message)
+{
+    if (notificationWidget_) {
+        notificationWidget_->showError(message);
+    }
+}
+
+void MainWindow::showSuccessNotification(const QString& message)
+{
+    if (notificationWidget_) {
+        notificationWidget_->showSuccess(message);
+    }
 }
 
 void MainWindow::setUnsavedChanges(bool hasChanges)
@@ -473,7 +528,7 @@ void MainWindow::applyFontSize(int size)
 {
     StyleManager::instance().setBaseFontSize(size);
     ConfigManager::instance().saveFontSize(size);
-    updateStatusBar(QString("Font size changed to %1").arg(size));
+    showNotification(QString("Font size changed to %1").arg(size));
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -484,6 +539,19 @@ void MainWindow::closeEvent(QCloseEvent* event)
     }
     
     event->accept();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (escOverlayMenu_ && !escOverlayMenu_->isMenuVisible()) {
+            escOverlayMenu_->showMenu();
+            event->accept();
+            return;
+        }
+    }
+    
+    QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::onMenuFileNew()
@@ -543,4 +611,50 @@ void MainWindow::onMenuHelpAbout()
         "Safe Airway v1.0.0\n\n"
         "A digital form application for airway management at Nemours Children's Health.\n\n"
         "© 2024 Nemours Children's Health");
+}
+
+// ESC Overlay Menu slot implementations
+void MainWindow::onOverlayNewCaseRequested()
+{
+    onMenuFileNew();
+}
+
+void MainWindow::onOverlayOpenCaseRequested()
+{
+    onMenuFileOpen();
+}
+
+void MainWindow::onOverlaySaveRequested()
+{
+    onMenuFileSave();
+}
+
+void MainWindow::onOverlaySaveAsRequested()
+{
+    onMenuFileSaveAs();
+}
+
+void MainWindow::onOverlayIncreaseFontRequested()
+{
+    onMenuViewIncreaseFontSize();
+}
+
+void MainWindow::onOverlayDecreaseFontRequested()
+{
+    onMenuViewDecreaseFontSize();
+}
+
+void MainWindow::onOverlayResetFontRequested()
+{
+    onMenuViewResetFontSize();
+}
+
+void MainWindow::onOverlayAboutRequested()
+{
+    onMenuHelpAbout();
+}
+
+void MainWindow::onOverlayExitRequested()
+{
+    onMenuFileExit();
 }

@@ -33,6 +33,21 @@ public:
     QFont getBodyFont() const;
     QFont getTableFont() const;
     QFont getEmergencyFont() const;
+    QFont getPatientNameFont() const;
+    QFont getKeyElementFont() const;
+    QFont getDecisionBoxFont() const;
+    
+    // Emergency panel specific fonts
+    QFont getEmergencyTitleFont() const;
+    QFont getEmergencyRadioFont() const;
+    QFont getEmergencyInstructionsFont() const;
+    QFont getEmergencyLabelFont() const;
+    
+    // Form element specific fonts
+    QFont getFormLabelFont() const;
+    QFont getFormInputFont() const;
+    QFont getButtonFont() const;
+    QFont getGroupBoxFont() const;
     
     void setBaseFontSize(int size);
     int getBaseFontSize() const;

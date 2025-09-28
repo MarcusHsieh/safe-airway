@@ -15,6 +15,8 @@ class NewTracheostomyFormView;
 class DifficultAirwayFormView;
 class LTRFormView;
 class CaseManager;
+class NotificationWidget;
+class EscOverlayMenu;
 
 class MainWindow : public QMainWindow
 {
@@ -26,6 +28,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 private slots:
     void onNewCaseRequested(CaseType caseType);
@@ -45,6 +48,17 @@ private slots:
     void onMenuViewDecreaseFontSize();
     void onMenuViewResetFontSize();
     void onMenuHelpAbout();
+    
+    // ESC Overlay Menu slots
+    void onOverlayNewCaseRequested();
+    void onOverlayOpenCaseRequested();
+    void onOverlaySaveRequested();
+    void onOverlaySaveAsRequested();
+    void onOverlayIncreaseFontRequested();
+    void onOverlayDecreaseFontRequested();
+    void onOverlayResetFontRequested();
+    void onOverlayAboutRequested();
+    void onOverlayExitRequested();
 
 private:
     QStackedWidget* stackedWidget_;
@@ -56,8 +70,8 @@ private:
     LTRFormView* ltrFormView_;
     
     QMenuBar* menuBar_;
-    QStatusBar* statusBar_;
-    QLabel* statusLabel_;
+    NotificationWidget* notificationWidget_;
+    EscOverlayMenu* escOverlayMenu_;
     QTimer* autoSaveTimer_;
     
     CaseManager* caseManager_;
@@ -66,7 +80,8 @@ private:
     
     void setupUI();
     void setupMenuBar();
-    void setupStatusBar();
+    void setupNotifications();
+    void setupEscOverlay();
     void setupConnections();
     void setupAutoSave();
     
@@ -78,7 +93,9 @@ private:
     bool saveAsCase();
     
     void updateWindowTitle();
-    void updateStatusBar(const QString& message);
+    void showNotification(const QString& message);
+    void showErrorNotification(const QString& message);
+    void showSuccessNotification(const QString& message);
     void setUnsavedChanges(bool hasChanges);
     
     bool promptSaveChanges();

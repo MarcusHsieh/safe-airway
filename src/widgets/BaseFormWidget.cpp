@@ -10,12 +10,15 @@
 #include <QSplitter>
 #include <QDebug>
 #include <QPixmap>
+#include <QGuiApplication>
+#include <QScreen>
 
 BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
     : QWidget(parent)
     , caseType_(caseType)
     , frozen_(false)
     , justSaved_(true)
+    , screenSize_(QGuiApplication::primaryScreen()->availableSize())
     , scrollArea_(nullptr)
     , contentWidget_(nullptr)
     , mainLayout_(nullptr)
@@ -45,7 +48,8 @@ BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
     , printButton_(nullptr)
     , backButton_(nullptr)
 {
-    currentCase_ = Case(QString(), caseType);
+    currentCase_ = Case();  // Use default constructor to generate UUID
+    currentCase_.setCaseType(caseType);
     setupUI();
     connectSignals();
     updateStyles();
@@ -57,17 +61,30 @@ void BaseFormWidget::setupUI()
     
     scrollArea_ = new QScrollArea();
     scrollArea_->setWidgetResizable(true);
-    scrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     
     contentWidget_ = new QWidget();
     contentLayout_ = new QVBoxLayout(contentWidget_);
-    contentLayout_->setSpacing(15);
-    contentLayout_->setContentsMargins(20, 20, 20, 20);
+    // Use percentage-based spacing and margins
+    int spacing = screenSize_.height() * 0.015; // 1.5% of screen height
+    int margin = screenSize_.width() * 0.015; // 1.5% of screen width
+    
+    contentLayout_->setSpacing(spacing);
+    contentLayout_->setContentsMargins(margin, margin, margin, margin);
     
     setupHeader();
-    contentLayout_->addWidget(logoLabel_);
-    contentLayout_->addWidget(headerLabel_);
+    // Header now contains both logo and title in horizontal layout
+    QWidget* headerWidget = new QWidget();
+    QHBoxLayout* headerLayout = new QHBoxLayout(headerWidget);
+    headerLayout->setSpacing(20);
+    headerLayout->setContentsMargins(0, 0, 0, 0);
+    
+    // Add logo to the left of the title
+    headerLayout->addWidget(logoLabel_);
+    headerLayout->addWidget(headerLabel_, 1); // Give title more space
+    
+    contentLayout_->addWidget(headerWidget);
     
     // Create two main columns layout
     QHBoxLayout* mainContentLayout = new QHBoxLayout();
@@ -85,8 +102,11 @@ void BaseFormWidget::setupUI()
     leftColumnLayout->addWidget(makeModelLabel);
     
     makeModelEdit_ = new QTextEdit();
-    makeModelEdit_->setMinimumHeight(100);
-    makeModelEdit_->setMaximumHeight(150);
+    // Use percentage-based height
+    int makeModelMinHeight = screenSize_.height() * 0.08; // 8% of screen height
+    int makeModelMaxHeight = screenSize_.height() * 0.12; // 12% of screen height
+    makeModelEdit_->setMinimumHeight(makeModelMinHeight);
+    makeModelEdit_->setMaximumHeight(makeModelMaxHeight);
     makeModelEdit_->setPlaceholderText("Enter device make and model information...");
     makeModelEdit_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     makeModelEdit_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -131,6 +151,7 @@ void BaseFormWidget::setupUI()
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(freezeButton_);
     buttonLayout->addStretch();
+    buttonLayout->addWidget(displayModeButton_);
     buttonLayout->addWidget(saveButton_);
     buttonLayout->addWidget(printButton_);
     buttonLayout->addWidget(backButton_);
@@ -163,19 +184,20 @@ void BaseFormWidget::finishSetup()
 
 void BaseFormWidget::setupHeader()
 {
-    // Create logo label
+    // Create logo label - smaller since it's now beside the title
     logoLabel_ = new QLabel();
-    logoLabel_->setAlignment(Qt::AlignCenter);
-    logoLabel_->setMaximumHeight(80);
+    logoLabel_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    logoLabel_->setMaximumHeight(60);
+    logoLabel_->setMaximumWidth(150);
     logoLabel_->setScaledContents(true);
     
     // Load and set the Nemours logo
     QPixmap logo(":/images/nemours-logo.png");
     if (!logo.isNull()) {
-        logoLabel_->setPixmap(logo.scaled(200, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        logoLabel_->setPixmap(logo.scaled(150, 60, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     } else {
-        logoLabel_->setText("Nemours Children's Health");
-        logoLabel_->setStyleSheet("font-weight: bold; color: #0066CC;");
+        logoLabel_->setText("Nemours");
+        logoLabel_->setStyleSheet("font-weight: bold; color: #0066CC; font-size: 16px;");
     }
     
     headerLabel_ = new QLabel();
@@ -211,26 +233,30 @@ void BaseFormWidget::setupSpecificationTable()
     headers << "Size" << "Type" << "Cuff" << "Inner Dia." << "Outer Dia." << "Length" << "Re-order #";
     specificationTable_->setHorizontalHeaderLabels(headers);
     
-    specificationTable_->setMinimumHeight(100);  // Increased height for taller row
-    specificationTable_->setMaximumHeight(150); // Increased max height for taller row
+    // Use percentage-based height for specification table
+    int tableMinHeight = screenSize_.height() * 0.08; // 8% of screen height
+    int tableMaxHeight = screenSize_.height() * 0.12; // 12% of screen height
+    specificationTable_->setMinimumHeight(tableMinHeight);
+    specificationTable_->setMaximumHeight(tableMaxHeight);
     specificationTable_->setAlternatingRowColors(false); // No need for alternating colors with single row
     specificationTable_->setSelectionBehavior(QAbstractItemView::SelectItems);
     specificationTable_->setSelectionMode(QAbstractItemView::SingleSelection);
     specificationTable_->setWordWrap(true);
     // Set minimum row height and hide vertical header (row numbers)
-    specificationTable_->verticalHeader()->setMinimumSectionSize(50); // Minimum row height of 50px
+    specificationTable_->verticalHeader()->setMinimumSectionSize(80); // Increased row height for better visibility
+    specificationTable_->verticalHeader()->setDefaultSectionSize(80); // Default row height
     specificationTable_->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     specificationTable_->verticalHeader()->setVisible(false); // Hide row numbers since it's single-row
-    
-    // Set optimized column widths for the 7 columns (Make/Model removed)
+
+    // Set larger column widths for better visibility
     specificationTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-    specificationTable_->horizontalHeader()->resizeSection(0, 100); // Size - small
-    specificationTable_->horizontalHeader()->resizeSection(1, 150); // Type - medium
-    specificationTable_->horizontalHeader()->resizeSection(2, 100); // Cuff - small
-    specificationTable_->horizontalHeader()->resizeSection(3, 150); // Inner Diameter - medium
-    specificationTable_->horizontalHeader()->resizeSection(4, 150); // Outer Diameter - medium
-    specificationTable_->horizontalHeader()->resizeSection(5, 100); // Length - small
-    specificationTable_->horizontalHeader()->resizeSection(6, 120); // Re-order # - medium
+    specificationTable_->horizontalHeader()->resizeSection(0, 120); // Size - increased
+    specificationTable_->horizontalHeader()->resizeSection(1, 180); // Type - increased
+    specificationTable_->horizontalHeader()->resizeSection(2, 120); // Cuff - increased
+    specificationTable_->horizontalHeader()->resizeSection(3, 180); // Inner Diameter - increased
+    specificationTable_->horizontalHeader()->resizeSection(4, 180); // Outer Diameter - increased
+    specificationTable_->horizontalHeader()->resizeSection(5, 120); // Length - increased
+    specificationTable_->horizontalHeader()->resizeSection(6, 150); // Re-order # - increased
     
     // Let columns stretch and wrap naturally instead of fixed widths
     
@@ -273,12 +299,28 @@ void BaseFormWidget::setupSpecTableButtons()
 void BaseFormWidget::setupDecisionBoxes()
 {
     decisionBoxGroup_ = new QGroupBox("Decision Boxes");
-    decisionBoxGroup_->setMinimumWidth(300);
+    decisionBoxGroup_->setFont(StyleManager::instance().getGroupBoxFont());
+    // Use percentage-based width for decision box
+    int decisionBoxWidth = screenSize_.width() * 0.25; // 25% of screen width
+    decisionBoxGroup_->setMinimumWidth(decisionBoxWidth);
     QVBoxLayout* layout = new QVBoxLayout(decisionBoxGroup_);
+    layout->setSpacing(15); // More spacing between checkboxes
     
     maskVentilateCheckBox_ = new QCheckBox("Mask Ventilate");
     intubateAboveCheckBox_ = new QCheckBox("Intubate Above");
     intubateStomaCheckBox_ = new QCheckBox("Intubate Stoma");
+    
+    // Apply larger font to decision boxes
+    QFont decisionFont = StyleManager::instance().getDecisionBoxFont();
+    maskVentilateCheckBox_->setFont(decisionFont);
+    intubateAboveCheckBox_->setFont(decisionFont);
+    intubateStomaCheckBox_->setFont(decisionFont);
+    
+    // Make checkboxes larger using percentage-based height
+    int checkboxHeight = screenSize_.height() * 0.04; // 4% of screen height
+    maskVentilateCheckBox_->setMinimumHeight(checkboxHeight);
+    intubateAboveCheckBox_->setMinimumHeight(checkboxHeight);
+    intubateStomaCheckBox_->setMinimumHeight(checkboxHeight);
     
     layout->addWidget(maskVentilateCheckBox_);
     layout->addWidget(intubateAboveCheckBox_);
@@ -288,15 +330,25 @@ void BaseFormWidget::setupDecisionBoxes()
 void BaseFormWidget::setupSidePanel()
 {
     sidePanelGroup_ = new QGroupBox("Suction & Comments");
+    sidePanelGroup_->setFont(StyleManager::instance().getGroupBoxFont());
     QVBoxLayout* layout = new QVBoxLayout(sidePanelGroup_);
     
     QHBoxLayout* suctionLayout = new QHBoxLayout();
-    suctionLayout->addWidget(new QLabel("Suction Size:"));
+    
+    QLabel* suctionSizeLabel = new QLabel("Suction Size:");
+    suctionSizeLabel->setFont(StyleManager::instance().getKeyElementFont());
+    suctionLayout->addWidget(suctionSizeLabel);
+    
     suctionSizeSpinBox_ = new QSpinBox();
-    suctionSizeSpinBox_->setMinimumWidth(200);
+    // Use percentage-based sizing for suction spinbox
+    int suctionWidth = screenSize_.width() * 0.15; // 15% of screen width
+    int suctionHeight = screenSize_.height() * 0.04; // 4% of screen height
+    suctionSizeSpinBox_->setMinimumWidth(suctionWidth);
+    suctionSizeSpinBox_->setMinimumHeight(suctionHeight);
     suctionSizeSpinBox_->setRange(1, 20);
     suctionSizeSpinBox_->setValue(6);
     suctionSizeSpinBox_->setAlignment(Qt::AlignLeft);
+    suctionSizeSpinBox_->setFont(StyleManager::instance().getKeyElementFont());
 
     suctionDepthEdit_ = new QLineEdit();
     suctionDepthEdit_->setAlignment(Qt::AlignLeft);
@@ -310,8 +362,11 @@ void BaseFormWidget::setupSidePanel()
     
     layout->addWidget(new QLabel("Special Comments:"));
     specialCommentsEdit_ = new QTextEdit();
-    specialCommentsEdit_->setMinimumHeight(150);
-    specialCommentsEdit_->setMaximumHeight(200);
+    // Use percentage-based height for comments area
+    int commentsMinHeight = screenSize_.height() * 0.12; // 12% of screen height
+    int commentsMaxHeight = screenSize_.height() * 0.16; // 16% of screen height
+    specialCommentsEdit_->setMinimumHeight(commentsMinHeight);
+    specialCommentsEdit_->setMaximumHeight(commentsMaxHeight);
     
     // Disable horizontal scrollbar to force wrapping
     specialCommentsEdit_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -383,11 +438,14 @@ void BaseFormWidget::setupActionButtons()
     saveButton_ = new QPushButton("Save Case");
     printButton_ = new QPushButton("Print");
     backButton_ = new QPushButton("Back");
-    
+    displayModeButton_ = new QPushButton("Display Mode");
+    displayModeButton_->setStyleSheet("QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }");
+
     connect(freezeButton_, &QPushButton::toggled, this, &BaseFormWidget::onFreezeClicked);
     connect(saveButton_, &QPushButton::clicked, this, &BaseFormWidget::onSaveClicked);
     connect(printButton_, &QPushButton::clicked, this, &BaseFormWidget::onPrintClicked);
     connect(backButton_, &QPushButton::clicked, this, &BaseFormWidget::onBackClicked);
+    connect(displayModeButton_, &QPushButton::clicked, this, &BaseFormWidget::onDisplayModeClicked);
 }
 
 void BaseFormWidget::connectSignals()
@@ -515,7 +573,8 @@ void BaseFormWidget::clear()
     specialCommentsEdit_->clear();
     makeModelEdit_->clear();
     
-    currentCase_ = Case(QString(), caseType_);
+    currentCase_ = Case();  // Use default constructor to generate UUID
+    currentCase_.setCaseType(caseType_);
     justSaved_ = true; // New empty case is considered "saved"
 }
 
@@ -707,6 +766,13 @@ void BaseFormWidget::onBackClicked()
     // Navigate back to case selection by emitting a signal
     // The MainWindow will handle showing the case selection view
     emit backRequested();
+}
+
+void BaseFormWidget::onDisplayModeClicked()
+{
+    // Switch to display mode by emitting a signal
+    // The MainWindow will handle showing the appropriate display view
+    emit displayModeRequested();
 }
 
 void BaseFormWidget::onPatientInfoChanged()

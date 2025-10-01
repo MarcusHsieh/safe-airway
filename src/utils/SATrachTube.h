@@ -12,12 +12,16 @@ public:
     // Standard outer diameters
     static QMap<double, double> BivonaStdOD;
     static QMap<double, double> ShileyStdOD;
+    static QMap<double, double> ShileyExtendedStdOD;
+    static QMap<double, double> TracoeStdOD;
 
     // Standard distal shaft lengths
     static QMap<double, int> BivonaStdDistalShaftLenNeo; // neonatal tubes only
     static QMap<double, int> ShileyStdDistalShaftLenNeo; // neonatal tubes only
+    static QMap<double, int> TracoeStdDistalShaftLenNeo; // neonatal tubes only
     static QMap<double, int> BivonaStdDistalShaftLenPed; // pediatric tubes only
     static QMap<double, int> ShileyStdDistalShaftLenPed; // pediatric tubes only
+    static QMap<double, int> TracoeStdDistalShaftLenPed; // pediatric tubes only
     static QMap<double, int> ShileyStdDistalShaftLenPedExtraLong; // pediatric extra long tubes only
     static QMap<double, int> BivonaStdDistalShaftLenPedPlus; // flextend pediatric plus tubes only
     static QMap<double, int> BivonaStdProximalShaftLen; // flextend tubes only
@@ -35,15 +39,21 @@ public:
     // Control Display Items
     static const QStringList BivonaTrachTypes;
     static const QStringList ShileyTrachTypes;
+    static const QStringList TracoeTypes;
     static const QStringList TrachSizes;
     static const QStringList BivNeoTrachSizes;
     static const QStringList BivPedTrachSizes;
     static const QStringList ShiNeoTrachSizes;
     static const QStringList ShiPedTrachSizes;
+    static const QStringList TracNeoTrachSizes;
+    static const QStringList TracPedTrachSizes;
     static const QStringList BivPedPlusTrachSizes;
     static const QStringList ShiPedPExtraLongTrachSizes;
+    static const QStringList ShiPedXExtraLongTrachSizes;
     static const QStringList BivonaCuffTypes;
     static const QStringList ShileyCuffTypes;
+    static const QStringList ShileyExtendedTypes;
+    static const QStringList TracoeCuffTypes;
     static const QStringList GenericFacePlateTypes;
     static const QStringList GenericCuffTypes;
 
@@ -51,6 +61,11 @@ public:
     static double calculateStdCathInsertDepth(int proximalShaftLen, int distalShaftLen,
                                             double suctTipExtend = SuctTipExtend,
                                             int adapterLen = AdapterLen);
+    
+    // Helper functions for sizing algorithms
+    static double getOuterDiameter(const QString& manufacturer, double size);
+    static int getSuctionCatheterSize(double trachSize);
+    static QString getETTSuctionDepth(const QString& ettSize);
 
 private:
     // Private constructor to prevent instantiation

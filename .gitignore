@@ -140,3 +140,6 @@ NUL
 # Additional Qt generated files
 moc_predefs.h
 object_script.*
+
+safe-airway_autogen/
+.qt/

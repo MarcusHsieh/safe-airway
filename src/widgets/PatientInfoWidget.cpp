@@ -55,9 +55,6 @@ void PatientInfoWidget::setupUI()
     // nameLayout->addWidget(lastNameLabel_);
     // nameLayout->addWidget(lastNameEdit_);
     
-    QHBoxLayout* infoLayout = new QHBoxLayout();
-    infoLayout->setSpacing(15);
-    
     // Hide MRN from UI but keep in backend for data persistence
     mrnLabel_ = new QLabel("MRN:");
     mrnLabel_->setMinimumWidth(100);
@@ -65,19 +62,16 @@ void PatientInfoWidget::setupUI()
     mrnEdit_->setMinimumHeight(30);
     mrnEdit_->setPlaceholderText("Medical Record #");
     // Don't add to layout - keep hidden for HIPAA compliance
-    // infoLayout->addWidget(mrnLabel_);
-    // infoLayout->addWidget(mrnEdit_);
     
+    // Hide DOB from UI but keep in backend for data persistence
     dobLabel_ = new QLabel("Date of Birth:");
     dobLabel_->setMinimumWidth(labelWidth);
     dobEdit_ = new QLineEdit();
     dobEdit_->setMinimumHeight(fieldHeight);
     dobEdit_->setPlaceholderText("MM/DD/YYYY");
-    infoLayout->addWidget(dobLabel_);
-    infoLayout->addWidget(dobEdit_);
+    // Don't add to layout - keep hidden to save screen space on small displays
     
     mainLayout->addLayout(nameLayout);
-    mainLayout->addLayout(infoLayout);
     
     setLayout(mainLayout);
 }

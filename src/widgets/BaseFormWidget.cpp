@@ -28,13 +28,13 @@ BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
     , headerLabel_(nullptr)
     , logoLabel_(nullptr)
     , patientInfoWidget_(nullptr)
-    , specificationTable_(nullptr)
-    , makeModelEdit_(nullptr)
+    , tubeSpecWidget_(nullptr)
     , addRowButton_(nullptr)
     , removeRowButton_(nullptr)
     , moveUpButton_(nullptr)
     , moveDownButton_(nullptr)
-    , emergencyPanel_(nullptr)
+    , emergencyPanelOverlay_(nullptr)
+    , emergencyButton_(nullptr)
     , decisionBoxGroup_(nullptr)
     , maskVentilateCheckBox_(nullptr)
     , intubateAboveCheckBox_(nullptr)
@@ -89,81 +89,89 @@ void BaseFormWidget::setupUI()
     // Create two main columns layout
     QHBoxLayout* mainContentLayout = new QHBoxLayout();
     
-    // COLUMN 1: Patient Info, Make/Model and Emergency Scenarios
+    // COLUMN 1: Patient Info, Decision Boxes, and Suction & Comments
     QVBoxLayout* leftColumnLayout = new QVBoxLayout();
     
     // Patient Info (moved from top to left column)
     patientInfoWidget_ = new PatientInfoWidget();
     leftColumnLayout->addWidget(patientInfoWidget_);
     
-    // Make/Model text area
-    QLabel* makeModelLabel = new QLabel("Make/Model:");
-    makeModelLabel->setFont(StyleManager::instance().getBodyFont());
-    leftColumnLayout->addWidget(makeModelLabel);
+    // Decision boxes (moved from Column 2)
+    setupDecisionBoxes();
+    leftColumnLayout->addWidget(decisionBoxGroup_);
     
-    makeModelEdit_ = new QTextEdit();
-    // Use percentage-based height
-    int makeModelMinHeight = screenSize_.height() * 0.08; // 8% of screen height
-    int makeModelMaxHeight = screenSize_.height() * 0.12; // 12% of screen height
-    makeModelEdit_->setMinimumHeight(makeModelMinHeight);
-    makeModelEdit_->setMaximumHeight(makeModelMaxHeight);
-    makeModelEdit_->setPlaceholderText("Enter device make and model information...");
-    makeModelEdit_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    makeModelEdit_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    leftColumnLayout->addWidget(makeModelEdit_);
+    // Suction & Comments panel (moved from Column 2 for better balance)
+    setupSidePanel();
+    leftColumnLayout->addWidget(sidePanelGroup_);
     
-    // Emergency scenarios
-    emergencyPanel_ = new EmergencyPanel();
-    leftColumnLayout->addWidget(emergencyPanel_);
+    // Create emergency panel overlay (initially hidden)
+    emergencyPanelOverlay_ = new EmergencyPanelOverlay(this);
+    
     leftColumnLayout->addStretch();
     
-    // COLUMN 2: Table and other components
+    // COLUMN 2: Tube Specification Widget and Tracheostomy Information
     QVBoxLayout* rightColumnLayout = new QVBoxLayout();
     
-    // Specification table (without Make/Model column)
-    setupSpecificationTable();
-    rightColumnLayout->addWidget(specificationTable_);
+    // Tube specification widget (full column width)
+    tubeSpecWidget_ = new TubeSpecificationWidget();
+    rightColumnLayout->addWidget(tubeSpecWidget_);
     
-    setupSpecTableButtons(); // Initialize button pointers to nullptr
-    
-    // Suction & Comments
-    setupSidePanel();
-    rightColumnLayout->addWidget(sidePanelGroup_);
-    
-    // Decision boxes and form-specific fields in horizontal layout
-    QHBoxLayout* decisionAndFormLayout = new QHBoxLayout();
-    
-    // Decision boxes
-    setupDecisionBoxes();
-    decisionBoxGroup_->setMaximumWidth(200);
-    decisionAndFormLayout->addWidget(decisionBoxGroup_);
-    
-    // Form-specific fields (will be added in finishSetup)
+    // Form-specific fields (moved from Column 1 for logical grouping with tube specs)
     QWidget* formFieldsWidget = new QWidget();
     formFieldsLayout_ = new QVBoxLayout(formFieldsWidget);
-    formFieldsLayout_->setContentsMargins(10, 0, 0, 0);
-    decisionAndFormLayout->addWidget(formFieldsWidget);
-    
-    rightColumnLayout->addLayout(decisionAndFormLayout);
-    
-    // Add action buttons to column 2 instead of bottom
-    setupActionButtons();
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(freezeButton_);
-    buttonLayout->addStretch();
-    buttonLayout->addWidget(displayModeButton_);
-    buttonLayout->addWidget(saveButton_);
-    buttonLayout->addWidget(printButton_);
-    buttonLayout->addWidget(backButton_);
-    rightColumnLayout->addLayout(buttonLayout);
+    formFieldsLayout_->setContentsMargins(0, 10, 0, 0);
+    rightColumnLayout->addWidget(formFieldsWidget);
     
     rightColumnLayout->addStretch();
     
-    // Add the two columns with 3:4 proportions (3/7 and 4/7 of screen)
-    mainContentLayout->addLayout(leftColumnLayout, 3);  // Column 1 - 3/7 of screen
-    mainContentLayout->addLayout(rightColumnLayout, 4); // Column 2 - 4/7 of screen
+    // Add the two columns with better balanced proportions (45:55)
+    mainContentLayout->addLayout(leftColumnLayout, 45);  // Column 1 - 45% of screen
+    mainContentLayout->addLayout(rightColumnLayout, 55); // Column 2 - 55% of screen
     
     contentLayout_->addLayout(mainContentLayout);
+    
+    // Add bottom action buttons bar
+    setupActionButtons();
+    QHBoxLayout* bottomButtonLayout = new QHBoxLayout();
+    bottomButtonLayout->setSpacing(15);
+    bottomButtonLayout->setContentsMargins(20, 10, 20, 10);
+    
+    // Emergency scenarios button (moved from Column 1)
+    emergencyButton_ = new QPushButton("Emergency Scenarios");
+    emergencyButton_->setMinimumHeight(60);
+    emergencyButton_->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #DC143C;"
+        "   color: white;"
+        "   font-weight: bold;"
+        "   font-size: 18px;"
+        "   border: 2px solid #DC143C;"
+        "   border-radius: 8px;"
+        "   padding: 8px 16px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #B22222;"
+        "   border-color: #B22222;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #8B0000;"
+        "}"
+    );
+    
+    bottomButtonLayout->addWidget(freezeButton_);
+    bottomButtonLayout->addWidget(emergencyButton_);
+    bottomButtonLayout->addStretch();
+    bottomButtonLayout->addWidget(displayModeButton_);
+    bottomButtonLayout->addWidget(saveButton_);
+    bottomButtonLayout->addWidget(printButton_);
+    bottomButtonLayout->addWidget(backButton_);
+    
+    contentLayout_->addLayout(bottomButtonLayout);
+    
+    // Connect emergency button signal now that it's created
+    connect(emergencyButton_, &QPushButton::clicked, this, [this]() {
+        emergencyPanelOverlay_->showOverlay();
+    });
     
     scrollArea_->setWidget(contentWidget_);
     mainLayout_->addWidget(scrollArea_);
@@ -224,67 +232,6 @@ void BaseFormWidget::setupHeader()
     headerLabel_->setText(formTitle);
 }
 
-void BaseFormWidget::setupSpecificationTable()
-{
-    specificationTable_ = new QTableWidget();
-    specificationTable_->setColumnCount(7); // Reduced from 8 to 7 (removed Make/Model)
-    
-    QStringList headers;
-    headers << "Size" << "Type" << "Cuff" << "Inner Dia." << "Outer Dia." << "Length" << "Re-order #";
-    specificationTable_->setHorizontalHeaderLabels(headers);
-    
-    // Use percentage-based height for specification table
-    int tableMinHeight = screenSize_.height() * 0.08; // 8% of screen height
-    int tableMaxHeight = screenSize_.height() * 0.12; // 12% of screen height
-    specificationTable_->setMinimumHeight(tableMinHeight);
-    specificationTable_->setMaximumHeight(tableMaxHeight);
-    specificationTable_->setAlternatingRowColors(false); // No need for alternating colors with single row
-    specificationTable_->setSelectionBehavior(QAbstractItemView::SelectItems);
-    specificationTable_->setSelectionMode(QAbstractItemView::SingleSelection);
-    specificationTable_->setWordWrap(true);
-    // Set minimum row height and hide vertical header (row numbers)
-    specificationTable_->verticalHeader()->setMinimumSectionSize(80); // Increased row height for better visibility
-    specificationTable_->verticalHeader()->setDefaultSectionSize(80); // Default row height
-    specificationTable_->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    specificationTable_->verticalHeader()->setVisible(false); // Hide row numbers since it's single-row
-
-    // Set larger column widths for better visibility
-    specificationTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-    specificationTable_->horizontalHeader()->resizeSection(0, 120); // Size - increased
-    specificationTable_->horizontalHeader()->resizeSection(1, 180); // Type - increased
-    specificationTable_->horizontalHeader()->resizeSection(2, 120); // Cuff - increased
-    specificationTable_->horizontalHeader()->resizeSection(3, 180); // Inner Diameter - increased
-    specificationTable_->horizontalHeader()->resizeSection(4, 180); // Outer Diameter - increased
-    specificationTable_->horizontalHeader()->resizeSection(5, 120); // Length - increased
-    specificationTable_->horizontalHeader()->resizeSection(6, 150); // Re-order # - increased
-    
-    // Let columns stretch and wrap naturally instead of fixed widths
-    
-    // Apply text wrapping delegate to all columns with custom character limits
-    TextWrapDelegate* delegate = new TextWrapDelegate(this);
-    
-    // Set character limits for each column based on content type and column width (7 columns)
-    QVector<int> columnLimits = {
-        5,  // Column 0: Size - short values like "6.0", "7.5"
-        9,  // Column 1: Type - medium descriptions
-        5,  // Column 2: Cuff - "Cuffed", "Uncuffed"
-        12,  // Column 3: Inner Diameter - numeric with units
-        12,  // Column 4: Outer Diameter - numeric with units  
-        5,  // Column 5: Length - numeric with units
-        6   // Column 6: Re-order # - part numbers/codes
-    };
-    delegate->setColumnCharacterLimits(columnLimits);
-    
-    for (int i = 0; i < 7; ++i) {
-        specificationTable_->setItemDelegateForColumn(i, delegate);
-    }
-    
-    // This connection is crucial for resizing rows when the view changes
-    connect(specificationTable_->horizontalHeader(), &QHeaderView::sectionResized,
-            specificationTable_, &QTableWidget::resizeRowsToContents);
-    
-    addSpecificationRow();
-}
 
 void BaseFormWidget::setupSpecTableButtons()
 {
@@ -298,7 +245,7 @@ void BaseFormWidget::setupSpecTableButtons()
 
 void BaseFormWidget::setupDecisionBoxes()
 {
-    decisionBoxGroup_ = new QGroupBox("Decision Boxes");
+    decisionBoxGroup_ = new QGroupBox("Emergency Airway Options");
     decisionBoxGroup_->setFont(StyleManager::instance().getGroupBoxFont());
     // Use percentage-based width for decision box
     int decisionBoxWidth = screenSize_.width() * 0.25; // 25% of screen width
@@ -333,11 +280,10 @@ void BaseFormWidget::setupSidePanel()
     sidePanelGroup_->setFont(StyleManager::instance().getGroupBoxFont());
     QVBoxLayout* layout = new QVBoxLayout(sidePanelGroup_);
     
-    QHBoxLayout* suctionLayout = new QHBoxLayout();
-    
+    // Suction Size - vertical layout
     QLabel* suctionSizeLabel = new QLabel("Suction Size:");
     suctionSizeLabel->setFont(StyleManager::instance().getKeyElementFont());
-    suctionLayout->addWidget(suctionSizeLabel);
+    layout->addWidget(suctionSizeLabel);
     
     suctionSizeSpinBox_ = new QSpinBox();
     // Use percentage-based sizing for suction spinbox
@@ -349,16 +295,18 @@ void BaseFormWidget::setupSidePanel()
     suctionSizeSpinBox_->setValue(6);
     suctionSizeSpinBox_->setAlignment(Qt::AlignLeft);
     suctionSizeSpinBox_->setFont(StyleManager::instance().getKeyElementFont());
-
+    layout->addWidget(suctionSizeSpinBox_);
+    
+    // Suction Depth - vertical layout
+    QLabel* suctionDepthLabel = new QLabel("Depth:");
+    suctionDepthLabel->setFont(StyleManager::instance().getKeyElementFont());
+    layout->addWidget(suctionDepthLabel);
+    
     suctionDepthEdit_ = new QLineEdit();
     suctionDepthEdit_->setAlignment(Qt::AlignLeft);
-    suctionLayout->addWidget(suctionSizeSpinBox_);
-    
-    suctionLayout->addWidget(new QLabel("Depth:"));
     suctionDepthEdit_->setPlaceholderText("e.g., 5 cm");
-    suctionLayout->addWidget(suctionDepthEdit_);
-    
-    layout->addLayout(suctionLayout);
+    suctionDepthEdit_->setMinimumHeight(suctionHeight);
+    layout->addWidget(suctionDepthEdit_);
     
     layout->addWidget(new QLabel("Special Comments:"));
     specialCommentsEdit_ = new QTextEdit();
@@ -451,22 +399,21 @@ void BaseFormWidget::setupActionButtons()
 void BaseFormWidget::connectSignals()
 {
     connect(patientInfoWidget_, &PatientInfoWidget::patientInfoChanged, this, &BaseFormWidget::onPatientInfoChanged);
-    connect(emergencyPanel_, &EmergencyPanel::scenarioSelected, this, &BaseFormWidget::onEmergencyScenarioSelected);
+    // Emergency button connection will be added after setupUI is complete
+    connect(emergencyPanelOverlay_, &EmergencyPanelOverlay::scenarioSelected, this, &BaseFormWidget::onEmergencyScenarioSelected);
     connect(suctionSizeSpinBox_, QOverload<int>::of(&QSpinBox::valueChanged), this, &BaseFormWidget::onSuctionSizeChanged);
-    connect(specificationTable_, &QTableWidget::cellChanged, this, &BaseFormWidget::onSpecTableChanged);
+    connect(tubeSpecWidget_, &TubeSpecificationWidget::specificationChanged, this, &BaseFormWidget::onFormFieldChanged);
     
     connect(maskVentilateCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
     connect(intubateAboveCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
     connect(intubateStomaCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
     connect(suctionDepthEdit_, &QLineEdit::textChanged, this, &BaseFormWidget::onFormFieldChanged);
     connect(specialCommentsEdit_, &QTextEdit::textChanged, this, &BaseFormWidget::onFormFieldChanged);
-    connect(makeModelEdit_, &QTextEdit::textChanged, this, &BaseFormWidget::onFormFieldChanged);
 }
 
 void BaseFormWidget::updateStyles()
 {
     StyleManager::instance().applyFormStyle(this, caseType_);
-    StyleManager::instance().applyTableStyle(specificationTable_);
 }
 
 void BaseFormWidget::setCase(const Case& case_)
@@ -478,13 +425,28 @@ void BaseFormWidget::setCase(const Case& case_)
 
 Case BaseFormWidget::getCase() const
 {
-    // Update case with current table contents first
-    const_cast<BaseFormWidget*>(this)->updateCaseFromTable();
     Case case_ = currentCase_;
+    
+    // Update case with current tube specification
+    SpecificationTableRow spec = tubeSpecWidget_->getSpecification();
+    QList<SpecificationTableRow> specs;
+    if (!spec.size.isEmpty()) {
+        SpecificationTableRow row;
+        row.makeModel = spec.makeModel;
+        row.size = spec.size;
+        row.type = spec.type;
+        row.cuff = spec.cuff;
+        row.innerDiameter = spec.innerDiameter;
+        row.outerDiameter = spec.outerDiameter;
+        row.length = spec.length;
+        row.reorderNumber = spec.reorderNumber;
+        specs.append(row);
+    }
+    case_.setSpecTable(specs);
     
     // Now update all form fields
     case_.setPatient(patientInfoWidget_->getPatientInfo());
-    case_.setEmergencyScenario(emergencyPanel_->getSelectedScenario());
+    case_.setEmergencyScenario(emergencyPanelOverlay_->getSelectedScenario());
     
     SuctionInfo suction;
     suction.size = suctionSizeSpinBox_->value();
@@ -508,16 +470,14 @@ void BaseFormWidget::setFrozen(bool frozen)
     frozen_ = frozen;
     
     patientInfoWidget_->setFrozen(frozen);
-    emergencyPanel_->setFrozen(false);
+    emergencyButton_->setEnabled(!frozen);
     
-    specificationTable_->setEnabled(!frozen);
-    // Table manipulation buttons removed for single-row mode
+    tubeSpecWidget_->setReadOnly(frozen);
     
     decisionBoxGroup_->setEnabled(!frozen);
     suctionSizeSpinBox_->setEnabled(!frozen);
     suctionDepthEdit_->setReadOnly(frozen);
     specialCommentsEdit_->setReadOnly(frozen);
-    makeModelEdit_->setReadOnly(frozen);
     
     saveButton_->setEnabled(!frozen);
     
@@ -549,8 +509,8 @@ QStringList BaseFormWidget::getValidationErrors() const
         errors << "Patient first name is required";
     }
     
-    if (specificationTable_->rowCount() == 0) {
-        errors << "At least one specification row is required";
+    if (!tubeSpecWidget_->isValid()) {
+        errors.append(tubeSpecWidget_->getValidationErrors());
     }
     
     return errors;
@@ -559,10 +519,9 @@ QStringList BaseFormWidget::getValidationErrors() const
 void BaseFormWidget::clear()
 {
     patientInfoWidget_->clear();
-    emergencyPanel_->clear();
+    emergencyPanelOverlay_->setSelectedScenario("");
     
-    specificationTable_->setRowCount(0);
-    addSpecificationRow(); // Only add one row for single-row mode
+    tubeSpecWidget_->clear();
     
     maskVentilateCheckBox_->setChecked(false);
     intubateAboveCheckBox_->setChecked(false);
@@ -571,74 +530,20 @@ void BaseFormWidget::clear()
     suctionSizeSpinBox_->setValue(6);
     suctionDepthEdit_->clear();
     specialCommentsEdit_->clear();
-    makeModelEdit_->clear();
     
     currentCase_ = Case();  // Use default constructor to generate UUID
     currentCase_.setCaseType(caseType_);
     justSaved_ = true; // New empty case is considered "saved"
 }
 
-void BaseFormWidget::addSpecificationRow()
-{
-    int row = specificationTable_->rowCount();
-    specificationTable_->insertRow(row);
-    
-    for (int col = 0; col < 7; ++col) { // Changed from 8 to 7 columns
-        QTableWidgetItem* item = new QTableWidgetItem();
-        specificationTable_->setItem(row, col, item);
-    }
-    
-    specificationTable_->resizeRowsToContents();
-    onSpecTableChanged();
-}
 
-void BaseFormWidget::removeSpecificationRow()
-{
-    int currentRow = specificationTable_->currentRow();
-    if (currentRow >= 0) {
-        specificationTable_->removeRow(currentRow);
-        onSpecTableChanged();
-    }
-}
 
-void BaseFormWidget::moveSpecificationRowUp()
-{
-    int currentRow = specificationTable_->currentRow();
-    if (currentRow > 0) {
-        specificationTable_->insertRow(currentRow - 1);
-        
-        for (int col = 0; col < specificationTable_->columnCount(); ++col) {
-            QTableWidgetItem* item = specificationTable_->takeItem(currentRow + 1, col);
-            specificationTable_->setItem(currentRow - 1, col, item);
-        }
-        
-        specificationTable_->removeRow(currentRow + 1);
-        specificationTable_->setCurrentCell(currentRow - 1, 0);
-        onSpecTableChanged();
-    }
-}
 
-void BaseFormWidget::moveSpecificationRowDown()
-{
-    int currentRow = specificationTable_->currentRow();
-    if (currentRow >= 0 && currentRow < specificationTable_->rowCount() - 1) {
-        specificationTable_->insertRow(currentRow + 2);
-        
-        for (int col = 0; col < specificationTable_->columnCount(); ++col) {
-            QTableWidgetItem* item = specificationTable_->takeItem(currentRow, col);
-            specificationTable_->setItem(currentRow + 2, col, item);
-        }
-        
-        specificationTable_->removeRow(currentRow);
-        specificationTable_->setCurrentCell(currentRow + 1, 0);
-        onSpecTableChanged();
-    }
-}
 
 void BaseFormWidget::loadFormData()
 {
     patientInfoWidget_->setPatientInfo(currentCase_.getPatient());
-    emergencyPanel_->setSelectedScenario(currentCase_.getEmergencyScenario());
+    emergencyPanelOverlay_->setSelectedScenario(currentCase_.getEmergencyScenario());
     
     updateTableFromCase();
     
@@ -653,87 +558,33 @@ void BaseFormWidget::loadFormData()
     
     specialCommentsEdit_->setPlainText(currentCase_.getSpecialComments());
     
-    // After loading, tell the table to resize all rows based on the delegate's hints
-    specificationTable_->resizeRowsToContents();
+    // Data loaded successfully
 }
 
 void BaseFormWidget::updateTableFromCase()
 {
     QList<SpecificationTableRow> specs = currentCase_.getSpecTable();
     
-    // Clear existing table content
-    specificationTable_->setRowCount(0);
-    
-    // Ensure we always have exactly one row for the single-row table
-    if (specs.isEmpty()) {
-        addSpecificationRow();
-        return;
-    }
-    
-    // For single-row mode, only use the first specification
-    if (specs.size() > 1) {
-        specs = QList<SpecificationTableRow>() << specs.first();
-    }
-    
-    // Set row count and populate data
-    specificationTable_->setRowCount(specs.size());
-    
-    for (int row = 0; row < specs.size(); ++row) {
-        const SpecificationTableRow& spec = specs[row];
+    // Load first specification into the widget (if any)
+    if (!specs.isEmpty()) {
+        const SpecificationTableRow& spec = specs.first();
         
-        // Make/Model is now handled separately, table columns shifted down
-        specificationTable_->setItem(row, 0, new QTableWidgetItem(spec.size));
-        specificationTable_->setItem(row, 1, new QTableWidgetItem(spec.type));
-        specificationTable_->setItem(row, 2, new QTableWidgetItem(spec.cuff));
-        specificationTable_->setItem(row, 3, new QTableWidgetItem(spec.innerDiameter == 0.0 ? "" : QString::number(spec.innerDiameter)));
-        specificationTable_->setItem(row, 4, new QTableWidgetItem(spec.outerDiameter == 0.0 ? "" : QString::number(spec.outerDiameter)));
-        specificationTable_->setItem(row, 5, new QTableWidgetItem(spec.length == 0.0 ? "" : QString::number(spec.length)));
-        specificationTable_->setItem(row, 6, new QTableWidgetItem(spec.reorderNumber == 0 ? "" : QString::number(spec.reorderNumber)));
+        SpecificationTableRow tubeSpec;
+        tubeSpec.makeModel = spec.makeModel;
+        tubeSpec.size = spec.size;
+        tubeSpec.type = spec.type;
+        tubeSpec.cuff = spec.cuff;
+        tubeSpec.innerDiameter = spec.innerDiameter;
+        tubeSpec.outerDiameter = spec.outerDiameter;
+        tubeSpec.length = spec.length;
+        tubeSpec.reorderNumber = spec.reorderNumber;
         
-        // Set Make/Model in the separate text area
-        if (makeModelEdit_) {
-            makeModelEdit_->setPlainText(spec.makeModel);
-        }
+        tubeSpecWidget_->setSpecification(tubeSpec);
+    } else {
+        tubeSpecWidget_->clear();
     }
 }
 
-void BaseFormWidget::updateCaseFromTable()
-{
-    QList<SpecificationTableRow> specs;
-    
-    for (int row = 0; row < specificationTable_->rowCount(); ++row) {
-        SpecificationTableRow spec;
-        
-        // Get Make/Model from the separate text area
-        spec.makeModel = makeModelEdit_ ? makeModelEdit_->toPlainText() : "";
-        
-        // Get other fields from table (columns shifted due to Make/Model removal)
-        QTableWidgetItem* item = specificationTable_->item(row, 0);
-        spec.size = item ? item->text() : "";
-        
-        item = specificationTable_->item(row, 1);
-        spec.type = item ? item->text() : "";
-        
-        item = specificationTable_->item(row, 2);
-        spec.cuff = item ? item->text() : "";
-        
-        item = specificationTable_->item(row, 3);
-        spec.innerDiameter = item ? item->text().toDouble() : 0.0;
-        
-        item = specificationTable_->item(row, 4);
-        spec.outerDiameter = item ? item->text().toDouble() : 0.0;
-        
-        item = specificationTable_->item(row, 5);
-        spec.length = item ? item->text().toDouble() : 0.0;
-        
-        item = specificationTable_->item(row, 6);
-        spec.reorderNumber = item ? item->text().toInt() : 0;
-        
-        specs.append(spec);
-    }
-    
-    currentCase_.setSpecTable(specs);
-}
 
 void BaseFormWidget::onSaveClicked()
 {
@@ -744,8 +595,7 @@ void BaseFormWidget::onSaveClicked()
         return;
     }
     
-    // Update case data from current table contents before saving
-    updateCaseFromTable();
+    // Case data is automatically updated through getCase() method
     saveFormData();
     justSaved_ = true;
     emit saveRequested();
@@ -790,17 +640,10 @@ void BaseFormWidget::onEmergencyScenarioSelected(const QString& scenario)
 
 void BaseFormWidget::onSuctionSizeChanged(int size)
 {
-    emergencyPanel_->setSuctionSize(size);
+    emergencyPanelOverlay_->setSuctionSize(size);
     emit formChanged();
 }
 
-void BaseFormWidget::onSpecTableChanged()
-{
-    justSaved_ = false;
-    // Resize rows when content changes to accommodate wrapped text
-    specificationTable_->resizeRowsToContents();
-    emit formChanged();
-}
 
 void BaseFormWidget::onFormFieldChanged()
 {

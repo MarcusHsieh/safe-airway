@@ -17,7 +17,8 @@
 #include <QTimer>
 #include "models/Case.h"
 #include "widgets/PatientInfoWidget.h"
-#include "widgets/EmergencyPanel.h"
+#include "widgets/EmergencyPanelOverlay.h"
+#include "widgets/TubeSpecificationWidget.h"
 #include "widgets/TextWrapDelegate.h"
 
 class BaseFormWidget : public QWidget
@@ -62,12 +63,10 @@ protected slots:
     void onPatientInfoChanged();
     void onEmergencyScenarioSelected(const QString& scenario);
     void onSuctionSizeChanged(int size);
-    void onSpecTableChanged();
     void onFormFieldChanged();
 
 protected:
     virtual void setupUI();
-    virtual void setupSpecificationTable();
     virtual void setupDecisionBoxes();
     virtual void setupSidePanel();
     virtual void setupActionButtons();
@@ -76,10 +75,6 @@ protected:
     virtual void updateStyles();
     virtual void updateEmergencyAdvice();
     
-    void addSpecificationRow();
-    void removeSpecificationRow();
-    void moveSpecificationRowUp();
-    void moveSpecificationRowDown();
     
     CaseType caseType_;
     Case currentCase_;
@@ -98,14 +93,14 @@ protected:
     QLabel* logoLabel_;
     PatientInfoWidget* patientInfoWidget_;
     
-    QTableWidget* specificationTable_;
-    QTextEdit* makeModelEdit_;
+    TubeSpecificationWidget* tubeSpecWidget_;
     QPushButton* addRowButton_;
     QPushButton* removeRowButton_;
     QPushButton* moveUpButton_;
     QPushButton* moveDownButton_;
     
-    EmergencyPanel* emergencyPanel_;
+    EmergencyPanelOverlay* emergencyPanelOverlay_;
+    QPushButton* emergencyButton_;
     
     QGroupBox* decisionBoxGroup_;
     QCheckBox* maskVentilateCheckBox_;

@@ -6,10 +6,14 @@ bool SATrachTube::isInitialized = false;
 // Initialize static maps - these will be populated in the implementation
 QMap<double, double> SATrachTube::BivonaStdOD;
 QMap<double, double> SATrachTube::ShileyStdOD;
+QMap<double, double> SATrachTube::ShileyExtendedStdOD;
+QMap<double, double> SATrachTube::TracoeStdOD;
 QMap<double, int> SATrachTube::BivonaStdDistalShaftLenNeo;
 QMap<double, int> SATrachTube::ShileyStdDistalShaftLenNeo;
+QMap<double, int> SATrachTube::TracoeStdDistalShaftLenNeo;
 QMap<double, int> SATrachTube::BivonaStdDistalShaftLenPed;
 QMap<double, int> SATrachTube::ShileyStdDistalShaftLenPed;
+QMap<double, int> SATrachTube::TracoeStdDistalShaftLenPed;
 QMap<double, int> SATrachTube::ShileyStdDistalShaftLenPedExtraLong;
 QMap<double, int> SATrachTube::BivonaStdDistalShaftLenPedPlus;
 QMap<double, int> SATrachTube::BivonaStdProximalShaftLen;
@@ -31,6 +35,14 @@ const QStringList SATrachTube::ShileyTrachTypes = {
     "Shiley - Pediatric",
     "Shiley - Pediatric - Extra Long",
     "Shiley - Custom"
+};
+
+const QStringList SATrachTube::TracoeTypes = {
+    "Tracoe - Silcosoft Neonatal",
+    "Tracoe - Silcosoft Pediatric", 
+    "Tracoe - Silcosoft Neonatal - Proximal Longer",
+    "Tracoe - Silcosoft Pediatric - Proximal Longer",
+    "Tracoe - Custom"
 };
 
 const QStringList SATrachTube::TrachSizes = {
@@ -57,8 +69,20 @@ const QStringList SATrachTube::BivPedPlusTrachSizes = {
     "4.0", "4.5", "5.0", "5.5"
 };
 
+const QStringList SATrachTube::TracNeoTrachSizes = {
+    "2.5", "3.0", "3.5", "4.0"
+};
+
+const QStringList SATrachTube::TracPedTrachSizes = {
+    "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5"
+};
+
 const QStringList SATrachTube::ShiPedPExtraLongTrachSizes = {
     "5.0", "5.5"
+};
+
+const QStringList SATrachTube::ShiPedXExtraLongTrachSizes = {
+    "5.0", "5.5", "6.0", "6.5"
 };
 
 const QStringList SATrachTube::BivonaCuffTypes = {
@@ -67,6 +91,15 @@ const QStringList SATrachTube::BivonaCuffTypes = {
 
 const QStringList SATrachTube::ShileyCuffTypes = {
     "Cuffless", "Cuffed"
+};
+
+const QStringList SATrachTube::ShileyExtendedTypes = {
+    "Shiley - Pediatric - Extra Long - TaperGuard",
+    "Shiley - Pediatric - Extra Long - Cuffless"
+};
+
+const QStringList SATrachTube::TracoeCuffTypes = {
+    "Cuffless", "H2O Cuff"
 };
 
 const QStringList SATrachTube::GenericFacePlateTypes = {
@@ -99,6 +132,19 @@ void SATrachTube::initializeMaps()
     ShileyStdOD[5.0] = 7.3; // Ped only
     ShileyStdOD[5.5] = 7.9; // Ped only
 
+    // Extended outer diameters - Shiley (TaperGuard & Extra-Long)
+    ShileyExtendedStdOD[6.0] = 8.5;
+    ShileyExtendedStdOD[6.5] = 9.0;
+
+    // Standard outer diameters - Tracoe (verified from Atos Medical)
+    TracoeStdOD[2.5] = 4.4;
+    TracoeStdOD[3.0] = 4.9;
+    TracoeStdOD[3.5] = 5.4;
+    TracoeStdOD[4.0] = 6.0;
+    TracoeStdOD[4.5] = 6.7;
+    TracoeStdOD[5.0] = 7.3;
+    TracoeStdOD[5.5] = 7.9;
+
     // Standard distal shaft lengths for neo tubes - Bivona
     BivonaStdDistalShaftLenNeo[2.5] = 30;
     BivonaStdDistalShaftLenNeo[3.0] = 32;
@@ -111,6 +157,12 @@ void SATrachTube::initializeMaps()
     ShileyStdDistalShaftLenNeo[3.5] = 32;
     ShileyStdDistalShaftLenNeo[4.0] = 34;
     ShileyStdDistalShaftLenNeo[4.5] = 36;
+
+    // Standard distal shaft lengths for neo tubes - Tracoe (REF 360/363)
+    TracoeStdDistalShaftLenNeo[2.5] = 30;
+    TracoeStdDistalShaftLenNeo[3.0] = 32;
+    TracoeStdDistalShaftLenNeo[3.5] = 34;
+    TracoeStdDistalShaftLenNeo[4.0] = 36;
 
     // Standard distal shaft lengths for ped tubes - Bivona
     BivonaStdDistalShaftLenPed[2.5] = 38;
@@ -130,6 +182,15 @@ void SATrachTube::initializeMaps()
     ShileyStdDistalShaftLenPed[5.0] = 44;
     ShileyStdDistalShaftLenPed[5.5] = 46;
 
+    // Standard distal shaft lengths for ped tubes - Tracoe (REF 370/372)
+    TracoeStdDistalShaftLenPed[2.5] = 38;
+    TracoeStdDistalShaftLenPed[3.0] = 39;
+    TracoeStdDistalShaftLenPed[3.5] = 40;
+    TracoeStdDistalShaftLenPed[4.0] = 41;
+    TracoeStdDistalShaftLenPed[4.5] = 42;
+    TracoeStdDistalShaftLenPed[5.0] = 44;
+    TracoeStdDistalShaftLenPed[5.5] = 46;
+
     // Standard proximal shaft lengths for flextend tubes - Bivona only
     BivonaStdProximalShaftLen[2.5] = 20;
     BivonaStdProximalShaftLen[3.0] = 20;
@@ -148,6 +209,8 @@ void SATrachTube::initializeMaps()
     // Standard distal shaft lengths for ped tubes extra long - Shiley
     ShileyStdDistalShaftLenPedExtraLong[5.0] = 50;
     ShileyStdDistalShaftLenPedExtraLong[5.5] = 52;
+    ShileyStdDistalShaftLenPedExtraLong[6.0] = 54;
+    ShileyStdDistalShaftLenPedExtraLong[6.5] = 56;
 
     // Standard suction catheter sizes (Fr)
     StdSuctCathSize[2.5] = 6;
@@ -157,6 +220,8 @@ void SATrachTube::initializeMaps()
     StdSuctCathSize[4.5] = 10;
     StdSuctCathSize[5.0] = 10;
     StdSuctCathSize[5.5] = 10;
+    StdSuctCathSize[6.0] = 12;
+    StdSuctCathSize[6.5] = 12;
 
     // ETT suction depths
     StdETTSuctDepth["2.0"] = "14";
@@ -167,6 +232,8 @@ void SATrachTube::initializeMaps()
     StdETTSuctDepth["4.5"] = "22";
     StdETTSuctDepth["5.0"] = "24";
     StdETTSuctDepth["5.5"] = "26";
+    StdETTSuctDepth["6.0"] = "28";
+    StdETTSuctDepth["6.5"] = "30";
 
     isInitialized = true;
 }
@@ -181,4 +248,47 @@ double SATrachTube::calculateStdCathInsertDepth(int proximalShaftLen, int distal
 
     // Calculates the recommended suction catheter insertion depth from trach tube parameters, in cm
     return (proximalShaftLen + adapterLen + distalShaftLen + suctTipExtend) / 10.0;
+}
+
+double SATrachTube::getOuterDiameter(const QString& manufacturer, double size)
+{
+    // Ensure maps are initialized
+    if (!isInitialized) {
+        initializeMaps();
+    }
+    
+    if (manufacturer.contains("Bivona") || manufacturer.contains("Portex")) {
+        return BivonaStdOD.value(size, 0.0);
+    } 
+    else if (manufacturer.contains("Shiley") || manufacturer.contains("Medtronic")) {
+        // Check for extended sizes first
+        if (size >= 6.0 && ShileyExtendedStdOD.contains(size)) {
+            return ShileyExtendedStdOD.value(size, 0.0);
+        }
+        return ShileyStdOD.value(size, 0.0);
+    } 
+    else if (manufacturer.contains("Tracoe") || manufacturer.contains("Atos")) {
+        return TracoeStdOD.value(size, 0.0);
+    }
+    return 0.0;
+}
+
+int SATrachTube::getSuctionCatheterSize(double trachSize)
+{
+    // Ensure maps are initialized
+    if (!isInitialized) {
+        initializeMaps();
+    }
+    
+    return StdSuctCathSize.value(trachSize, 0);
+}
+
+QString SATrachTube::getETTSuctionDepth(const QString& ettSize)
+{
+    // Ensure maps are initialized
+    if (!isInitialized) {
+        initializeMaps();
+    }
+    
+    return StdETTSuctDepth.value(ettSize, "");
 }

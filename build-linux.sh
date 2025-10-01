@@ -36,7 +36,7 @@ EOF
     exit 0
 fi
 
-echo "🏗️  Safe Airway Linux Build Script"
+echo ">>  Safe Airway Linux Build Script"
 echo "=================================="
 
 # Colors for output

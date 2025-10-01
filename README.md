@@ -15,9 +15,6 @@ A digital form application for airway management at Nemours Children's Health, b
 
 Choose your development environment:
 
-### For Production/Distribution
-- **[Creating Windows Distributable (Portable .exe)](CREATE_WINDOWS_EXECUTABLE.md)** - Complete guide to creating standalone Windows executables
-
 ### For Development
 
 #### Windows Development (Recommended)
@@ -75,20 +72,165 @@ release\safe-airway.exe
 ```
 
 ### Windows Release Build (Distributable)
+
+This section explains how to create a portable Windows .exe for Safe Airway that can run on any Windows 10/11 machine without requiring Qt installation.
+
+#### Important: DPI Scaling Fix
+The application now includes automatic high DPI scaling support to ensure proper rendering on Windows displays with scaling (125%, 150%, 200%, etc.). The Windows executable will automatically match your system's display settings.
+
+#### Quick Start (Automated Build)
 ```batch
 REM Using automated build script (Easiest)
 cd C:\_Projects\safe-airway
 build-windows-release.bat
 ```
 
-The script will:
-- Build optimized release version
-- Bundle all Qt dependencies automatically
-- Create `safe-airway-dist/` folder with everything needed
+The script will automatically:
+- Clean previous builds
+- Configure for release mode
+- Build the application
+- Bundle all Qt dependencies
+- Create a ready-to-distribute folder
 
-**Result:** Portable ~25-40 MB folder that runs on any Windows 10/11 machine.
+**Result:** Portable ~25-40 MB folder that runs on any Windows 10/11 machine in `safe-airway-dist/`
 
-For detailed distribution instructions, see **[CREATE_WINDOWS_EXECUTABLE.md](CREATE_WINDOWS_EXECUTABLE.md)**
+#### Manual Build (Step-by-Step)
+
+If you prefer to build manually or the script doesn't work:
+
+**Step 1: Set Up Environment**
+```batch
+REM Set Qt directory (adjust path if different)
+set QTDIR=C:\Qt\6.7.3\mingw_64
+set PATH=%QTDIR%\bin;%PATH%
+
+REM Navigate to project
+cd C:\_Projects\safe-airway
+```
+
+**Step 2: Clean Previous Builds**
+```batch
+REM Remove old build files
+rmdir /s /q release
+rmdir /s /q debug
+del Makefile*
+```
+
+**Step 3: Configure Release Build**
+```batch
+qmake safe-airway.pro CONFIG+=release
+```
+
+**Step 4: Build the Application**
+```batch
+mingw32-make clean
+mingw32-make -j4
+```
+
+This will take 2-5 minutes. Your executable will be at: `release\safe-airway.exe`
+
+**Step 5: Create Distribution Folder**
+```batch
+REM Create distribution directory
+mkdir safe-airway-dist
+cd safe-airway-dist
+
+REM Copy the executable
+copy ..\release\safe-airway.exe .
+```
+
+**Step 6: Bundle Qt Dependencies**
+```batch
+REM Still in safe-airway-dist directory
+windeployqt.exe safe-airway.exe --release --no-translations
+```
+
+This automatically copies all required Qt DLLs (Qt6Core.dll, Qt6Widgets.dll, Qt6Gui.dll, etc.)
+
+**Step 7: Add MinGW Runtime (If Needed)**
+```batch
+REM Copy MinGW runtime DLLs
+copy "%QTDIR%\bin\libgcc_s_seh-1.dll" .
+copy "%QTDIR%\bin\libstdc++-6.dll" .
+copy "%QTDIR%\bin\libwinpthread-1.dll" .
+```
+
+**Step 8: Verify the Package**
+
+Your `safe-airway-dist` folder should contain:
+- safe-airway.exe (Main executable)
+- Qt6Core.dll, Qt6Widgets.dll, Qt6Gui.dll, Qt6PrintSupport.dll
+- libgcc_s_seh-1.dll, libstdc++-6.dll, libwinpthread-1.dll
+- platforms/qwindows.dll
+- styles/qwindowsvistastyle.dll
+
+**Total size:** ~25-40 MB
+
+#### Testing the Distributable
+
+**Test on Build Machine:**
+1. Navigate to `safe-airway-dist` folder
+2. Double-click `safe-airway.exe`
+3. Application should start without errors
+
+**Test on Clean Machine (Important):**
+1. Copy the entire `safe-airway-dist` folder to a USB drive
+2. Test on a Windows machine that **does not have Qt installed**
+3. Run `safe-airway.exe` from the USB drive
+
+If it runs successfully, your distribution is complete!
+
+#### Distribution Options
+
+**Option 1: ZIP Archive (Quick & Simple)**
+```batch
+REM From project root
+powershell Compress-Archive -Path safe-airway-dist -DestinationPath SafeAirway-v1.1.0-windows-x64.zip
+```
+
+**Option 2: Create an Installer (Professional)**
+
+Use **Inno Setup** (https://jrsoftware.org/isinfo.php) to create a professional installer:
+
+1. Download and install Inno Setup
+2. Create a script (`safe-airway-installer.iss`):
+
+```ini
+[Setup]
+AppName=Safe Airway
+AppVersion=1.1.0
+DefaultDirName={pf}\SafeAirway
+DefaultGroupName=Safe Airway
+OutputDir=.
+OutputBaseFilename=SafeAirway-Setup-v1.1.0
+
+[Files]
+Source: "safe-airway-dist\*"; DestDir: "{app}"; Flags: recursesubdirs
+
+[Icons]
+Name: "{group}\Safe Airway"; Filename: "{app}\safe-airway.exe"
+Name: "{commondesktop}\Safe Airway"; Filename: "{app}\safe-airway.exe"
+
+[Run]
+Filename: "{app}\safe-airway.exe"; Description: "Launch Safe Airway"; Flags: postinstall nowait skipifsilent
+```
+
+3. Compile the script in Inno Setup
+4. Distribute the resulting `SafeAirway-Setup-v1.1.0.exe`
+
+#### Distribution Verification Checklist
+
+Before distributing, verify:
+- [ ] Application starts without errors
+- [ ] All forms load correctly
+- [ ] Cases can be saved and loaded
+- [ ] Emergency scenarios popup works
+- [ ] Printing functionality works
+- [ ] All buttons and inputs are functional
+- [ ] Tested on a clean Windows machine
+- [ ] Package size is reasonable (~25-40 MB)
+- [ ] No missing DLL errors
+- [ ] Application closes cleanly
 
 ### Features
 - **Four Color-Coded Forms**: Tracheostomy (Teal), New Tracheostomy (Deep Purple), Difficult Airway (Amber), LTR (Blue)
@@ -101,24 +243,6 @@ For detailed distribution instructions, see **[CREATE_WINDOWS_EXECUTABLE.md](CRE
 - **Smart Notifications**: Bottom-centered popup notifications that allow button interaction
 - **Case Management**: Save, load, and manage cases with recent files list
 - **Manufacturer Persistence**: Tube manufacturer correctly saved and restored (uses data value, not display text)
-
-### Recent Improvements (v1.1.0-alpha)
-- ✅ **Centralized Font Configuration**: All font sizes configurable in one location (`src/utils/StyleManager.cpp`)
-- ✅ **Enhanced Emergency Panel**: Larger popup (1300x800px) with wider buttons to prevent text cutoff
-- ✅ **Improved Notifications**: Bottom-centered notifications that allow button clicks while visible
-- ✅ **Fixed Save Logic**: Resolved manufacturer field reset issue and unwanted save prompts
-- ✅ **Smart Change Detection**: Loading flag prevents false "unsaved changes" during data loading
-- ✅ **Font Size Standardization**: All UI elements now use 32px base font for consistent visibility
-- ✅ **Emergency Instructions**: Increased to 32px for better readability from distance
-
-### Previous Improvements (v1.0.0-alpha)
-- ✅ **Responsive Layout**: Converted to percentage-based sizing for cross-screen compatibility
-- ✅ **Enhanced Visibility**: Increased font sizes (32pt base, up to 40pt for critical elements)
-- ✅ **HIPAA Compliance**: Hidden sensitive patient information from display
-- ✅ **Space Optimization**: Compact header with logo beside title
-- ✅ **Modern Notifications**: Popup notification system replaces permanent status bar
-- ✅ **Decision Box Enhancement**: Enlarged primary rescue mode options
-- ✅ **Epic Integration Ready**: Backend data structure preserved for future C++ integration
 
 ### Application Structure
 - `src/core/` - Application services (CaseManager, Application)

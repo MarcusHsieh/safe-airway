@@ -62,6 +62,9 @@ HEADERS += \
 RESOURCES += \
     resources.qrc
 
+# Windows application icon
+win32: RC_ICONS = images/nemours-logo.ico
+
 INCLUDEPATH += \
     src \
     src/core \

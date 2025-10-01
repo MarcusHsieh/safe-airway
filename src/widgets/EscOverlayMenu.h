@@ -51,6 +51,7 @@ private:
     void setupUI();
     void setupButtonStyling();
     QString getButtonStyleSheet(const QString& color, bool isFileButton = false) const;
+    QString getButtonStyleSheet(const QString& color, const QString& hoverColor) const;
     
     QWidget* menuPanel_;
     QGridLayout* buttonLayout_;

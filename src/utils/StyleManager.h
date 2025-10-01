@@ -51,7 +51,8 @@ public:
     
     void setBaseFontSize(int size);
     int getBaseFontSize() const;
-    
+    int getNotificationFontSize() const;
+
     QString getFormStyleSheet(CaseType caseType) const;
     QString getTableStyleSheet() const;
     QString getEmergencyStyleSheet() const;

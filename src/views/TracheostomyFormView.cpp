@@ -18,26 +18,21 @@ void TracheostomyFormView::setupFormSpecificFields()
     specificFieldsGroup_ = new QGroupBox("Tracheostomy Information");
     specificFieldsGroup_->setFont(StyleManager::instance().getGroupBoxFont());
     QVBoxLayout* groupLayout = new QVBoxLayout(specificFieldsGroup_);
-    
-    QHBoxLayout* indicationLayout = new QHBoxLayout();
-    trachIndicationLabel_ = new QLabel("Trach Indication:");
-    // Use percentage-based sizing for trach indication field
+    groupLayout->setSpacing(5);
+
+    // Vertical layout: label above input (consistent with TubeSpecificationWidget)
     QSize screenSize = QGuiApplication::primaryScreen()->availableSize();
-    int labelWidth = screenSize.width() * 0.10; // 10% of screen width
     int fieldHeight = screenSize.height() * 0.04; // 4% of screen height
-    
-    trachIndicationLabel_->setMinimumWidth(labelWidth);
+
+    trachIndicationLabel_ = new QLabel("Trach Indication:");
     trachIndicationLabel_->setFont(StyleManager::instance().getFormLabelFont());
-    
+    groupLayout->addWidget(trachIndicationLabel_);
+
     trachIndicationEdit_ = new QLineEdit();
     trachIndicationEdit_->setPlaceholderText("Enter tracheostomy indication");
     trachIndicationEdit_->setMinimumHeight(fieldHeight);
     trachIndicationEdit_->setFont(StyleManager::instance().getFormInputFont());
-    
-    indicationLayout->addWidget(trachIndicationLabel_);
-    indicationLayout->addWidget(trachIndicationEdit_);
-    
-    groupLayout->addLayout(indicationLayout);
+    groupLayout->addWidget(trachIndicationEdit_);
     
     // Add the group box to the form fields layout in BaseFormWidget
     if (formFieldsLayout_) {

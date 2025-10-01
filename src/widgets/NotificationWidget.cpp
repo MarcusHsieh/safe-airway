@@ -1,4 +1,5 @@
 #include "NotificationWidget.h"
+#include "utils/StyleManager.h"
 #include <QVBoxLayout>
 #include <QGraphicsOpacityEffect>
 #include <QShowEvent>
@@ -21,7 +22,7 @@ NotificationWidget::NotificationWidget(QWidget* parent)
 
 void NotificationWidget::setupUI()
 {
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::WindowTransparentForInput);
     setAttribute(Qt::WA_TranslucentBackground);
     
     // Create layout
@@ -32,16 +33,17 @@ void NotificationWidget::setupUI()
     messageLabel_ = new QLabel();
     messageLabel_->setAlignment(Qt::AlignCenter);
     messageLabel_->setWordWrap(true);
-    messageLabel_->setStyleSheet(
+    int fontSize = StyleManager::instance().getNotificationFontSize();
+    messageLabel_->setStyleSheet(QString(
         "QLabel {"
         "   background-color: rgba(0, 0, 0, 180);"
         "   color: white;"
         "   border-radius: 8px;"
         "   padding: 10px 15px;"
-        "   font-size: 14px;"
+        "   font-size: %1px;"
         "   font-weight: bold;"
         "}"
-    );
+    ).arg(fontSize));
     
     layout->addWidget(messageLabel_);
     
@@ -62,16 +64,17 @@ void NotificationWidget::setupAnimation()
 void NotificationWidget::showNotification(const QString& message, int duration)
 {
     messageLabel_->setText(message);
-    messageLabel_->setStyleSheet(
+    int fontSize = StyleManager::instance().getNotificationFontSize();
+    messageLabel_->setStyleSheet(QString(
         "QLabel {"
         "   background-color: rgba(0, 0, 0, 180);"
         "   color: white;"
         "   border-radius: 8px;"
         "   padding: 10px 15px;"
-        "   font-size: 14px;"
+        "   font-size: %1px;"
         "   font-weight: bold;"
         "}"
-    );
+    ).arg(fontSize));
     
     positionWidget();
     setWindowOpacity(1.0);
@@ -84,16 +87,17 @@ void NotificationWidget::showNotification(const QString& message, int duration)
 void NotificationWidget::showError(const QString& message, int duration)
 {
     messageLabel_->setText(message);
-    messageLabel_->setStyleSheet(
+    int fontSize = StyleManager::instance().getNotificationFontSize();
+    messageLabel_->setStyleSheet(QString(
         "QLabel {"
         "   background-color: rgba(220, 20, 60, 180);"
         "   color: white;"
         "   border-radius: 8px;"
         "   padding: 10px 15px;"
-        "   font-size: 14px;"
+        "   font-size: %1px;"
         "   font-weight: bold;"
         "}"
-    );
+    ).arg(fontSize));
     
     positionWidget();
     setWindowOpacity(1.0);
@@ -106,16 +110,17 @@ void NotificationWidget::showError(const QString& message, int duration)
 void NotificationWidget::showSuccess(const QString& message, int duration)
 {
     messageLabel_->setText(message);
-    messageLabel_->setStyleSheet(
+    int fontSize = StyleManager::instance().getNotificationFontSize();
+    messageLabel_->setStyleSheet(QString(
         "QLabel {"
         "   background-color: rgba(34, 139, 34, 180);"
         "   color: white;"
         "   border-radius: 8px;"
         "   padding: 10px 15px;"
-        "   font-size: 14px;"
+        "   font-size: %1px;"
         "   font-weight: bold;"
         "}"
-    );
+    ).arg(fontSize));
     
     positionWidget();
     setWindowOpacity(1.0);
@@ -128,17 +133,17 @@ void NotificationWidget::showSuccess(const QString& message, int duration)
 void NotificationWidget::positionWidget()
 {
     if (!parent()) return;
-    
+
     QWidget* parentWidget = qobject_cast<QWidget*>(parent());
     if (!parentWidget) return;
-    
-    // Position in top-right corner of parent
+
+    // Position in bottom-center of parent
     QSize parentSize = parentWidget->size();
     QSize thisSize = sizeHint();
-    
-    int x = parentSize.width() - thisSize.width() - 20;
-    int y = 20;
-    
+
+    int x = (parentSize.width() - thisSize.width()) / 2;
+    int y = parentSize.height() - thisSize.height() - 80;
+
     // Convert to global coordinates
     QPoint globalPos = parentWidget->mapToGlobal(QPoint(x, y));
     move(globalPos);

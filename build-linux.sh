@@ -9,7 +9,7 @@ set -e  # Exit on any error
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     cat << 'EOF'
 
-🏗️  Safe Airway Linux Build Script
+>>  Safe Airway Linux Build Script
 ==================================
 
 USAGE:
@@ -134,19 +134,10 @@ if [ -f "$EXECUTABLE" ]; then
     chmod +x "$EXECUTABLE"
     
     echo ""
-    echo "🎉 Build Complete!"
+    echo ">> Build Complete!"
     echo "=================="
     echo "Executable: $EXECUTABLE"
     echo "Run with: ./$EXECUTABLE"
-    echo ""
-    echo "UI Optimizations Included:"
-    echo "• Emergency panel converted to popup overlay (~40% space savings)"
-    echo "• Date of birth field removed for more space"
-    echo "• Table replaced with modern widget for better touch interaction"
-    echo "• Complete Tracoe manufacturer support added"
-    echo "• Extended Shiley product lines (6.0-6.5mm sizes)"
-    echo "• Automatic outer diameter and suction catheter calculations"
-    echo "• Optimized layout for small displays like Surface Pro 8"
     echo ""
 else
     print_error "Executable not found after build"

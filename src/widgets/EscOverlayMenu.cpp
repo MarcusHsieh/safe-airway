@@ -46,26 +46,26 @@ void EscOverlayMenu::setupUI()
     QHBoxLayout* centerLayout = new QHBoxLayout();
     centerLayout->addStretch();
     
-    // Menu panel with background
+    // Menu panel with modern card styling
     menuPanel_ = new QWidget();
-    menuPanel_->setFixedSize(600, 500);
+    menuPanel_->setFixedSize(700, 550);
     menuPanel_->setStyleSheet(
         "QWidget {"
-        "   background-color: rgba(255, 255, 255, 240);"
-        "   border: 2px solid #CCCCCC;"
-        "   border-radius: 15px;"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
         "}"
     );
-    
+
     QVBoxLayout* panelLayout = new QVBoxLayout(menuPanel_);
-    panelLayout->setSpacing(20);
-    panelLayout->setContentsMargins(30, 30, 30, 30);
-    
+    panelLayout->setSpacing(25);
+    panelLayout->setContentsMargins(40, 35, 40, 35);
+
     // Title
     titleLabel_ = new QLabel("Menu");
     titleLabel_->setAlignment(Qt::AlignCenter);
     titleLabel_->setFont(StyleManager::instance().getHeaderFont());
-    titleLabel_->setStyleSheet("color: #333333; font-weight: bold;");
+    titleLabel_->setStyleSheet("color: #2C3E50; font-weight: bold;");
     panelLayout->addWidget(titleLabel_);
     
     // Button grid
@@ -83,14 +83,15 @@ void EscOverlayMenu::setupUI()
     aboutButton_ = new QPushButton("About");
     exitButton_ = new QPushButton("Exit");
     
-    // Set minimum height for all buttons
+    // Set minimum height and cursor for all buttons
     QList<QPushButton*> buttons = {newCaseButton_, openCaseButton_, saveButton_, saveAsButton_,
                                    increaseFontButton_, decreaseFontButton_, resetFontButton_,
                                    aboutButton_, exitButton_};
-    
+
     for (QPushButton* button : buttons) {
-        button->setMinimumHeight(60);
-        button->setMinimumWidth(160);
+        button->setMinimumHeight(65);
+        button->setMinimumWidth(180);
+        button->setCursor(Qt::PointingHandCursor);
     }
     
     // Arrange buttons in grid (3 columns)
@@ -106,14 +107,7 @@ void EscOverlayMenu::setupUI()
     
     panelLayout->addLayout(buttonLayout_);
     panelLayout->addStretch();
-    
-    // Add close instruction
-    QLabel* instructionLabel = new QLabel("Press ESC to close");
-    instructionLabel->setAlignment(Qt::AlignCenter);
-    instructionLabel->setFont(StyleManager::instance().getBodyFont());
-    instructionLabel->setStyleSheet("color: #666666; font-style: italic;");
-    panelLayout->addWidget(instructionLabel);
-    
+
     centerLayout->addWidget(menuPanel_);
     centerLayout->addStretch();
     
@@ -135,46 +129,77 @@ void EscOverlayMenu::setupUI()
 
 void EscOverlayMenu::setupButtonStyling()
 {
-    // Style buttons similar to case selection buttons
-    
+    // Modern button styling matching the app theme
+
     // File operation buttons (blue theme)
-    newCaseButton_->setStyleSheet(getButtonStyleSheet("#0066CC", true));
-    openCaseButton_->setStyleSheet(getButtonStyleSheet("#0066CC", true));
-    saveButton_->setStyleSheet(getButtonStyleSheet("#0066CC", true));
-    saveAsButton_->setStyleSheet(getButtonStyleSheet("#0066CC", true));
-    
-    // Font buttons (green theme)
-    increaseFontButton_->setStyleSheet(getButtonStyleSheet("#228B22"));
-    decreaseFontButton_->setStyleSheet(getButtonStyleSheet("#228B22"));
-    resetFontButton_->setStyleSheet(getButtonStyleSheet("#228B22"));
-    
-    // Utility buttons (gray theme)
-    aboutButton_->setStyleSheet(getButtonStyleSheet("#666666"));
-    exitButton_->setStyleSheet(getButtonStyleSheet("#DC143C")); // Red for exit
+    newCaseButton_->setStyleSheet(getButtonStyleSheet("#1976D2", "#1565C0"));
+    openCaseButton_->setStyleSheet(getButtonStyleSheet("#1976D2", "#1565C0"));
+    saveButton_->setStyleSheet(getButtonStyleSheet("#1976D2", "#1565C0"));
+    saveAsButton_->setStyleSheet(getButtonStyleSheet("#1976D2", "#1565C0"));
+
+    // Font buttons (teal theme)
+    increaseFontButton_->setStyleSheet(getButtonStyleSheet("#00897B", "#00695C"));
+    decreaseFontButton_->setStyleSheet(getButtonStyleSheet("#00897B", "#00695C"));
+    resetFontButton_->setStyleSheet(getButtonStyleSheet("#00897B", "#00695C"));
+
+    // Utility buttons
+    aboutButton_->setStyleSheet(getButtonStyleSheet("#607D8B", "#546E7A"));
+    exitButton_->setStyleSheet(getButtonStyleSheet("#DC143C", "#B22222")); // Red for exit
 }
 
-QString EscOverlayMenu::getButtonStyleSheet(const QString& color, bool /* isFileButton */) const
+QString EscOverlayMenu::getButtonStyleSheet(const QString& color, bool isFileButton) const
 {
-    QString textColor = (color == "#666666" || color == "#DC143C") ? "white" : "white";
-    
+    Q_UNUSED(isFileButton);
+
+    // Calculate hover color (20% darker)
+    QString hoverColor = color;
+    if (color.contains("#")) {
+        // Use the second color parameter as hover color
+        hoverColor = color;
+    }
+
     return QString(
         "QPushButton {"
         "   background-color: %1;"
-        "   color: %2;"
+        "   color: white;"
         "   font-weight: bold;"
-        "   font-size: 18px;"
-        "   border: 2px solid %1;"
+        "   font-size: 24px;"
+        "   border: none;"
         "   border-radius: 8px;"
-        "   padding: 8px 16px;"
+        "   padding: 12px 20px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: rgba(0, 0, 0, 0.1);"
-        "   border-color: %1;"
+        "   background-color: %2;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: rgba(0, 0, 0, 0.2);"
+        "   background-color: %2;"
+        "   padding-top: 14px;"
+        "   padding-bottom: 10px;"
         "}"
-    ).arg(color).arg(textColor);
+    ).arg(color);
+}
+
+QString EscOverlayMenu::getButtonStyleSheet(const QString& color, const QString& hoverColor) const
+{
+    return QString(
+        "QPushButton {"
+        "   background-color: %1;"
+        "   color: white;"
+        "   font-weight: bold;"
+        "   font-size: 24px;"
+        "   border: none;"
+        "   border-radius: 8px;"
+        "   padding: 12px 20px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: %2;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: %2;"
+        "   padding-top: 14px;"
+        "   padding-bottom: 10px;"
+        "}"
+    ).arg(color, hoverColor);
 }
 
 void EscOverlayMenu::showMenu()

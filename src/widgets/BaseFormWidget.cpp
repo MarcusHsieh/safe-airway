@@ -18,6 +18,7 @@ BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
     , caseType_(caseType)
     , frozen_(false)
     , justSaved_(true)
+    , loading_(false)
     , screenSize_(QGuiApplication::primaryScreen()->availableSize())
     , scrollArea_(nullptr)
     , contentWidget_(nullptr)
@@ -35,10 +36,6 @@ BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
     , moveDownButton_(nullptr)
     , emergencyPanelOverlay_(nullptr)
     , emergencyButton_(nullptr)
-    , decisionBoxGroup_(nullptr)
-    , maskVentilateCheckBox_(nullptr)
-    , intubateAboveCheckBox_(nullptr)
-    , intubateStomaCheckBox_(nullptr)
     , sidePanelGroup_(nullptr)
     , suctionSizeSpinBox_(nullptr)
     , suctionDepthEdit_(nullptr)
@@ -57,116 +54,165 @@ BaseFormWidget::BaseFormWidget(CaseType caseType, QWidget* parent)
 
 void BaseFormWidget::setupUI()
 {
+    // Set modern background color
+    setStyleSheet("QWidget { background-color: #F5F5F5; }");
+
     mainLayout_ = new QVBoxLayout(this);
-    
+    mainLayout_->setContentsMargins(0, 0, 0, 0);
+    mainLayout_->setSpacing(0);
+
     scrollArea_ = new QScrollArea();
     scrollArea_->setWidgetResizable(true);
     scrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    
+    scrollArea_->setStyleSheet("QScrollArea { border: none; background-color: #F5F5F5; }");
+
     contentWidget_ = new QWidget();
+    contentWidget_->setStyleSheet("QWidget { background-color: #F5F5F5; }");
     contentLayout_ = new QVBoxLayout(contentWidget_);
-    // Use percentage-based spacing and margins
-    int spacing = screenSize_.height() * 0.015; // 1.5% of screen height
-    int margin = screenSize_.width() * 0.015; // 1.5% of screen width
-    
-    contentLayout_->setSpacing(spacing);
-    contentLayout_->setContentsMargins(margin, margin, margin, margin);
+
+    contentLayout_->setSpacing(20);
+    contentLayout_->setContentsMargins(25, 20, 25, 20);
     
     setupHeader();
-    // Header now contains both logo and title in horizontal layout
+
+    // Get case type color for branding
+    QColor caseColor = StyleManager::instance().getFormColour(caseType_);
+
+    // Modern header card with colored accent
     QWidget* headerWidget = new QWidget();
-    QHBoxLayout* headerLayout = new QHBoxLayout(headerWidget);
+    QVBoxLayout* headerMainLayout = new QVBoxLayout(headerWidget);
+    headerMainLayout->setContentsMargins(0, 0, 0, 0);
+    headerMainLayout->setSpacing(0);
+
+    // Colored accent bar at top
+    QWidget* accentBar = new QWidget();
+    accentBar->setFixedHeight(6);
+    accentBar->setStyleSheet(QString("background-color: %1; border-top-left-radius: 12px; border-top-right-radius: 12px;").arg(caseColor.name()));
+    headerMainLayout->addWidget(accentBar);
+
+    // Header content
+    QWidget* headerContent = new QWidget();
+    headerContent->setStyleSheet(
+        "QWidget {"
+        "   background-color: white;"
+        "   border-bottom-left-radius: 12px;"
+        "   border-bottom-right-radius: 12px;"
+        "}"
+    );
+    QHBoxLayout* headerLayout = new QHBoxLayout(headerContent);
     headerLayout->setSpacing(20);
-    headerLayout->setContentsMargins(0, 0, 0, 0);
-    
-    // Add logo to the left of the title
+    headerLayout->setContentsMargins(20, 15, 20, 15);
+
+    // Add logo to the left
     headerLayout->addWidget(logoLabel_);
-    headerLayout->addWidget(headerLabel_, 1); // Give title more space
-    
+
+    // Add patient info widget to header
+    patientInfoWidget_ = new PatientInfoWidget();
+    headerLayout->addWidget(patientInfoWidget_);
+
+    // Add form title with case type color
+    headerLabel_->setStyleSheet(QString("font-size: 32px; font-weight: bold; color: %1;").arg(caseColor.name()));
+    headerLayout->addWidget(headerLabel_, 1);
+
+    headerMainLayout->addWidget(headerContent);
+
+    // Apply outer border to entire header widget
+    headerWidget->setStyleSheet(QString(
+        "QWidget#headerCard {"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   border-left: 4px solid %1;"
+        "}"
+    ).arg(caseColor.name()));
+    headerWidget->setObjectName("headerCard");
+
     contentLayout_->addWidget(headerWidget);
     
     // Create two main columns layout
     QHBoxLayout* mainContentLayout = new QHBoxLayout();
     
-    // COLUMN 1: Patient Info, Decision Boxes, and Suction & Comments
+    // COLUMN 1: Suction & Comments and Form-specific fields
     QVBoxLayout* leftColumnLayout = new QVBoxLayout();
-    
-    // Patient Info (moved from top to left column)
-    patientInfoWidget_ = new PatientInfoWidget();
-    leftColumnLayout->addWidget(patientInfoWidget_);
-    
-    // Decision boxes (moved from Column 2)
-    setupDecisionBoxes();
-    leftColumnLayout->addWidget(decisionBoxGroup_);
-    
-    // Suction & Comments panel (moved from Column 2 for better balance)
+
+    // Suction & Comments panel
     setupSidePanel();
     leftColumnLayout->addWidget(sidePanelGroup_);
-    
+
+    // Form-specific fields (Tracheostomy Information, etc.)
+    QWidget* formFieldsWidget = new QWidget();
+    formFieldsLayout_ = new QVBoxLayout(formFieldsWidget);
+    formFieldsLayout_->setContentsMargins(0, 10, 0, 0);
+    leftColumnLayout->addWidget(formFieldsWidget);
+
     // Create emergency panel overlay (initially hidden)
     emergencyPanelOverlay_ = new EmergencyPanelOverlay(this);
-    
+
     leftColumnLayout->addStretch();
-    
-    // COLUMN 2: Tube Specification Widget and Tracheostomy Information
+
+    // COLUMN 2: Tube Specification Widget
     QVBoxLayout* rightColumnLayout = new QVBoxLayout();
-    
+
     // Tube specification widget (full column width)
     tubeSpecWidget_ = new TubeSpecificationWidget();
     rightColumnLayout->addWidget(tubeSpecWidget_);
     
-    // Form-specific fields (moved from Column 1 for logical grouping with tube specs)
-    QWidget* formFieldsWidget = new QWidget();
-    formFieldsLayout_ = new QVBoxLayout(formFieldsWidget);
-    formFieldsLayout_->setContentsMargins(0, 10, 0, 0);
-    rightColumnLayout->addWidget(formFieldsWidget);
-    
     rightColumnLayout->addStretch();
     
-    // Add the two columns with better balanced proportions (45:55)
-    mainContentLayout->addLayout(leftColumnLayout, 45);  // Column 1 - 45% of screen
-    mainContentLayout->addLayout(rightColumnLayout, 55); // Column 2 - 55% of screen
+    // Add the two columns with 30:70 split
+    mainContentLayout->addLayout(leftColumnLayout, 30);  // Column 1 - 30% of screen
+    mainContentLayout->addLayout(rightColumnLayout, 70); // Column 2 - 70% of screen
     
     contentLayout_->addLayout(mainContentLayout);
     
     // Add bottom action buttons bar
     setupActionButtons();
-    QHBoxLayout* bottomButtonLayout = new QHBoxLayout();
-    bottomButtonLayout->setSpacing(15);
-    bottomButtonLayout->setContentsMargins(20, 10, 20, 10);
-    
+
+    // Bottom button bar with card styling
+    QWidget* buttonBarWidget = new QWidget();
+    buttonBarWidget->setStyleSheet(
+        "QWidget {"
+        "   background-color: white;"
+        "   border-radius: 12px;"
+        "   border: 1px solid #E0E0E0;"
+        "}"
+    );
+    QHBoxLayout* bottomButtonLayout = new QHBoxLayout(buttonBarWidget);
+    bottomButtonLayout->setSpacing(12);
+    bottomButtonLayout->setContentsMargins(20, 15, 20, 15);
+
     // Emergency scenarios button (moved from Column 1)
     emergencyButton_ = new QPushButton("Emergency Scenarios");
-    emergencyButton_->setMinimumHeight(60);
+    emergencyButton_->setMinimumHeight(50);
+    emergencyButton_->setCursor(Qt::PointingHandCursor);
     emergencyButton_->setStyleSheet(
         "QPushButton {"
         "   background-color: #DC143C;"
         "   color: white;"
         "   font-weight: bold;"
-        "   font-size: 18px;"
-        "   border: 2px solid #DC143C;"
+        "   font-size: 24px;"
+        "   border: none;"
         "   border-radius: 8px;"
-        "   padding: 8px 16px;"
+        "   padding: 12px 24px;"
         "}"
         "QPushButton:hover {"
         "   background-color: #B22222;"
-        "   border-color: #B22222;"
         "}"
         "QPushButton:pressed {"
         "   background-color: #8B0000;"
+        "   padding-top: 14px;"
+        "   padding-bottom: 10px;"
         "}"
     );
-    
+
     bottomButtonLayout->addWidget(freezeButton_);
     bottomButtonLayout->addWidget(emergencyButton_);
     bottomButtonLayout->addStretch();
-    bottomButtonLayout->addWidget(displayModeButton_);
     bottomButtonLayout->addWidget(saveButton_);
     bottomButtonLayout->addWidget(printButton_);
     bottomButtonLayout->addWidget(backButton_);
-    
-    contentLayout_->addLayout(bottomButtonLayout);
+
+    contentLayout_->addWidget(buttonBarWidget);
     
     // Connect emergency button signal now that it's created
     connect(emergencyButton_, &QPushButton::clicked, this, [this]() {
@@ -243,78 +289,105 @@ void BaseFormWidget::setupSpecTableButtons()
     moveDownButton_ = nullptr;
 }
 
-void BaseFormWidget::setupDecisionBoxes()
-{
-    decisionBoxGroup_ = new QGroupBox("Emergency Airway Options");
-    decisionBoxGroup_->setFont(StyleManager::instance().getGroupBoxFont());
-    // Use percentage-based width for decision box
-    int decisionBoxWidth = screenSize_.width() * 0.25; // 25% of screen width
-    decisionBoxGroup_->setMinimumWidth(decisionBoxWidth);
-    QVBoxLayout* layout = new QVBoxLayout(decisionBoxGroup_);
-    layout->setSpacing(15); // More spacing between checkboxes
-    
-    maskVentilateCheckBox_ = new QCheckBox("Mask Ventilate");
-    intubateAboveCheckBox_ = new QCheckBox("Intubate Above");
-    intubateStomaCheckBox_ = new QCheckBox("Intubate Stoma");
-    
-    // Apply larger font to decision boxes
-    QFont decisionFont = StyleManager::instance().getDecisionBoxFont();
-    maskVentilateCheckBox_->setFont(decisionFont);
-    intubateAboveCheckBox_->setFont(decisionFont);
-    intubateStomaCheckBox_->setFont(decisionFont);
-    
-    // Make checkboxes larger using percentage-based height
-    int checkboxHeight = screenSize_.height() * 0.04; // 4% of screen height
-    maskVentilateCheckBox_->setMinimumHeight(checkboxHeight);
-    intubateAboveCheckBox_->setMinimumHeight(checkboxHeight);
-    intubateStomaCheckBox_->setMinimumHeight(checkboxHeight);
-    
-    layout->addWidget(maskVentilateCheckBox_);
-    layout->addWidget(intubateAboveCheckBox_);
-    layout->addWidget(intubateStomaCheckBox_);
-}
 
 void BaseFormWidget::setupSidePanel()
 {
     sidePanelGroup_ = new QGroupBox("Suction & Comments");
     sidePanelGroup_->setFont(StyleManager::instance().getGroupBoxFont());
+    sidePanelGroup_->setStyleSheet(
+        "QGroupBox {"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   padding: 20px;"
+        "   margin-top: 15px;"
+        "   font-size: 32px;"
+        "   font-weight: bold;"
+        "   color: #2C3E50;"
+        "}"
+        "QGroupBox::title {"
+        "   subcontrol-origin: margin;"
+        "   subcontrol-position: top left;"
+        "   padding: 5px 10px;"
+        "   background-color: white;"
+        "}"
+    );
     QVBoxLayout* layout = new QVBoxLayout(sidePanelGroup_);
-    
+    layout->setSpacing(12);
+    layout->setContentsMargins(15, 25, 15, 15);
+
     // Suction Size - vertical layout
     QLabel* suctionSizeLabel = new QLabel("Suction Size:");
     suctionSizeLabel->setFont(StyleManager::instance().getKeyElementFont());
+    suctionSizeLabel->setStyleSheet("color: #546E7A; font-size: 32px; font-weight: normal;");
     layout->addWidget(suctionSizeLabel);
-    
+
     suctionSizeSpinBox_ = new QSpinBox();
-    // Use percentage-based sizing for suction spinbox
-    int suctionWidth = screenSize_.width() * 0.15; // 15% of screen width
-    int suctionHeight = screenSize_.height() * 0.04; // 4% of screen height
-    suctionSizeSpinBox_->setMinimumWidth(suctionWidth);
-    suctionSizeSpinBox_->setMinimumHeight(suctionHeight);
+    suctionSizeSpinBox_->setMinimumHeight(40);
     suctionSizeSpinBox_->setRange(1, 20);
     suctionSizeSpinBox_->setValue(6);
     suctionSizeSpinBox_->setAlignment(Qt::AlignLeft);
     suctionSizeSpinBox_->setFont(StyleManager::instance().getKeyElementFont());
+    suctionSizeSpinBox_->setStyleSheet(
+        "QSpinBox {"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 6px;"
+        "   padding: 8px 12px;"
+        "   font-size: 32px;"
+        "}"
+        "QSpinBox:focus {"
+        "   border: 2px solid #1976D2;"
+        "   background-color: white;"
+        "}"
+    );
     layout->addWidget(suctionSizeSpinBox_);
-    
+
     // Suction Depth - vertical layout
     QLabel* suctionDepthLabel = new QLabel("Depth:");
     suctionDepthLabel->setFont(StyleManager::instance().getKeyElementFont());
+    suctionDepthLabel->setStyleSheet("color: #546E7A; font-size: 32px; font-weight: normal;");
     layout->addWidget(suctionDepthLabel);
-    
+
     suctionDepthEdit_ = new QLineEdit();
     suctionDepthEdit_->setAlignment(Qt::AlignLeft);
     suctionDepthEdit_->setPlaceholderText("e.g., 5 cm");
-    suctionDepthEdit_->setMinimumHeight(suctionHeight);
+    suctionDepthEdit_->setMinimumHeight(40);
+    suctionDepthEdit_->setStyleSheet(
+        "QLineEdit {"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 6px;"
+        "   padding: 8px 12px;"
+        "   font-size: 32px;"
+        "}"
+        "QLineEdit:focus {"
+        "   border: 2px solid #1976D2;"
+        "   background-color: white;"
+        "}"
+    );
     layout->addWidget(suctionDepthEdit_);
-    
-    layout->addWidget(new QLabel("Special Comments:"));
+
+    QLabel* commentsLabel = new QLabel("Special Comments:");
+    commentsLabel->setStyleSheet("color: #546E7A; font-size: 32px; font-weight: normal;");
+    layout->addWidget(commentsLabel);
+
     specialCommentsEdit_ = new QTextEdit();
-    // Use percentage-based height for comments area
-    int commentsMinHeight = screenSize_.height() * 0.12; // 12% of screen height
-    int commentsMaxHeight = screenSize_.height() * 0.16; // 16% of screen height
-    specialCommentsEdit_->setMinimumHeight(commentsMinHeight);
-    specialCommentsEdit_->setMaximumHeight(commentsMaxHeight);
+    specialCommentsEdit_->setMinimumHeight(120);
+    specialCommentsEdit_->setMaximumHeight(180);
+    specialCommentsEdit_->setStyleSheet(
+        "QTextEdit {"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 6px;"
+        "   padding: 10px;"
+        "   font-size: 32px;"
+        "}"
+        "QTextEdit:focus {"
+        "   border: 2px solid #1976D2;"
+        "   background-color: white;"
+        "}"
+    );
     
     // Disable horizontal scrollbar to force wrapping
     specialCommentsEdit_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -379,21 +452,55 @@ void BaseFormWidget::setupSidePanel()
 
 void BaseFormWidget::setupActionButtons()
 {
-    freezeButton_ = new QPushButton("Freeze Mode");
-    freezeButton_->setCheckable(true);
-    freezeButton_->setStyleSheet("QPushButton:checked { background-color: #DC143C; color: white; }");
-    
-    saveButton_ = new QPushButton("Save Case");
-    printButton_ = new QPushButton("Print");
-    backButton_ = new QPushButton("Back");
-    displayModeButton_ = new QPushButton("Display Mode");
-    displayModeButton_->setStyleSheet("QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }");
+    auto createButton = [](const QString& text, const QString& color, const QString& hoverColor, bool checkable = false) -> QPushButton* {
+        QPushButton* btn = new QPushButton(text);
+        btn->setMinimumHeight(45);
+        btn->setMinimumWidth(100);
+        btn->setCursor(Qt::PointingHandCursor);
+        btn->setCheckable(checkable);
+
+        QString style = QString(
+            "QPushButton {"
+            "   background-color: %1;"
+            "   color: white;"
+            "   font-weight: bold;"
+            "   font-size: 24px;"
+            "   border: none;"
+            "   border-radius: 8px;"
+            "   padding: 10px 20px;"
+            "}"
+            "QPushButton:hover {"
+            "   background-color: %2;"
+            "}"
+            "QPushButton:pressed {"
+            "   background-color: %2;"
+            "   padding-top: 12px;"
+            "   padding-bottom: 8px;"
+            "}"
+        ).arg(color, hoverColor);
+
+        if (checkable) {
+            style += QString(
+                "QPushButton:checked {"
+                "   background-color: #DC143C;"
+                "   color: white;"
+                "}"
+            );
+        }
+
+        btn->setStyleSheet(style);
+        return btn;
+    };
+
+    freezeButton_ = createButton("Freeze", "#607D8B", "#546E7A", true);
+    saveButton_ = createButton("Save Case", "#1976D2", "#1565C0");
+    printButton_ = createButton("Print", "#78909C", "#607D8B");
+    backButton_ = createButton("Back", "#90A4AE", "#78909C");
 
     connect(freezeButton_, &QPushButton::toggled, this, &BaseFormWidget::onFreezeClicked);
     connect(saveButton_, &QPushButton::clicked, this, &BaseFormWidget::onSaveClicked);
     connect(printButton_, &QPushButton::clicked, this, &BaseFormWidget::onPrintClicked);
     connect(backButton_, &QPushButton::clicked, this, &BaseFormWidget::onBackClicked);
-    connect(displayModeButton_, &QPushButton::clicked, this, &BaseFormWidget::onDisplayModeClicked);
 }
 
 void BaseFormWidget::connectSignals()
@@ -403,10 +510,7 @@ void BaseFormWidget::connectSignals()
     connect(emergencyPanelOverlay_, &EmergencyPanelOverlay::scenarioSelected, this, &BaseFormWidget::onEmergencyScenarioSelected);
     connect(suctionSizeSpinBox_, QOverload<int>::of(&QSpinBox::valueChanged), this, &BaseFormWidget::onSuctionSizeChanged);
     connect(tubeSpecWidget_, &TubeSpecificationWidget::specificationChanged, this, &BaseFormWidget::onFormFieldChanged);
-    
-    connect(maskVentilateCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
-    connect(intubateAboveCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
-    connect(intubateStomaCheckBox_, &QCheckBox::toggled, this, &BaseFormWidget::onFormFieldChanged);
+
     connect(suctionDepthEdit_, &QLineEdit::textChanged, this, &BaseFormWidget::onFormFieldChanged);
     connect(specialCommentsEdit_, &QTextEdit::textChanged, this, &BaseFormWidget::onFormFieldChanged);
 }
@@ -453,11 +557,6 @@ Case BaseFormWidget::getCase() const
     suction.depth = suctionDepthEdit_->text();
     case_.setSuction(suction);
     
-    DecisionBox decision;
-    decision.maskVentilate = maskVentilateCheckBox_->isChecked();
-    decision.intubateAbove = intubateAboveCheckBox_->isChecked();
-    decision.intubateStoma = intubateStomaCheckBox_->isChecked();
-    case_.setDecisionBox(decision);
     
     case_.setSpecialComments(specialCommentsEdit_->toPlainText());
     case_.setUpdatedAt(QDateTime::currentDateTime());
@@ -473,8 +572,7 @@ void BaseFormWidget::setFrozen(bool frozen)
     emergencyButton_->setEnabled(!frozen);
     
     tubeSpecWidget_->setReadOnly(frozen);
-    
-    decisionBoxGroup_->setEnabled(!frozen);
+
     suctionSizeSpinBox_->setEnabled(!frozen);
     suctionDepthEdit_->setReadOnly(frozen);
     specialCommentsEdit_->setReadOnly(frozen);
@@ -488,7 +586,7 @@ void BaseFormWidget::setFrozen(bool frozen)
     } else {
         StyleManager::instance().applyFreezeOverlay(contentWidget_, false);
         freezeButton_->setChecked(false);
-        freezeButton_->setText("Freeze Mode");
+        freezeButton_->setText("Freeze");
         // Don't call updateStyles() as it resets font size - styles are preserved automatically
     }
     
@@ -522,11 +620,7 @@ void BaseFormWidget::clear()
     emergencyPanelOverlay_->setSelectedScenario("");
     
     tubeSpecWidget_->clear();
-    
-    maskVentilateCheckBox_->setChecked(false);
-    intubateAboveCheckBox_->setChecked(false);
-    intubateStomaCheckBox_->setChecked(false);
-    
+
     suctionSizeSpinBox_->setValue(6);
     suctionDepthEdit_->clear();
     specialCommentsEdit_->clear();
@@ -542,23 +636,20 @@ void BaseFormWidget::clear()
 
 void BaseFormWidget::loadFormData()
 {
+    loading_ = true; // Prevent signals from marking form as modified
+
     patientInfoWidget_->setPatientInfo(currentCase_.getPatient());
     emergencyPanelOverlay_->setSelectedScenario(currentCase_.getEmergencyScenario());
-    
+
     updateTableFromCase();
-    
+
     SuctionInfo suction = currentCase_.getSuction();
     suctionSizeSpinBox_->setValue(suction.size);
     suctionDepthEdit_->setText(suction.depth);
-    
-    DecisionBox decision = currentCase_.getDecisionBox();
-    maskVentilateCheckBox_->setChecked(decision.maskVentilate);
-    intubateAboveCheckBox_->setChecked(decision.intubateAbove);
-    intubateStomaCheckBox_->setChecked(decision.intubateStoma);
-    
+
     specialCommentsEdit_->setPlainText(currentCase_.getSpecialComments());
-    
-    // Data loaded successfully
+
+    loading_ = false; // Re-enable modification tracking
 }
 
 void BaseFormWidget::updateTableFromCase()
@@ -618,38 +709,39 @@ void BaseFormWidget::onBackClicked()
     emit backRequested();
 }
 
-void BaseFormWidget::onDisplayModeClicked()
-{
-    // Switch to display mode by emitting a signal
-    // The MainWindow will handle showing the appropriate display view
-    emit displayModeRequested();
-}
-
 void BaseFormWidget::onPatientInfoChanged()
 {
-    justSaved_ = false;
-    emit formChanged();
+    if (!loading_) {
+        justSaved_ = false;
+        emit formChanged();
+    }
 }
 
 void BaseFormWidget::onEmergencyScenarioSelected(const QString& scenario)
 {
     updateEmergencyAdvice();
     emit emergencyScenarioChanged(scenario);
-    emit formChanged();
+    if (!loading_) {
+        emit formChanged();
+    }
 }
 
 void BaseFormWidget::onSuctionSizeChanged(int size)
 {
     emergencyPanelOverlay_->setSuctionSize(size);
-    emit formChanged();
+    if (!loading_) {
+        emit formChanged();
+    }
 }
 
 
 void BaseFormWidget::onFormFieldChanged()
 {
-    justSaved_ = false;
-    currentCase_.setUpdatedAt(QDateTime::currentDateTime());
-    emit formChanged();
+    if (!loading_) {
+        justSaved_ = false;
+        currentCase_.setUpdatedAt(QDateTime::currentDateTime());
+        emit formChanged();
+    }
 }
 
 void BaseFormWidget::saveFormData()

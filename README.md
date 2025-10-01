@@ -188,17 +188,27 @@ safe-airway-dist/
 - **Code Signing**: For professional deployment, sign the executable with a code signing certificate
 
 ### Features
-- **Four Color-Coded Forms**: Tracheostomy (Teal), New Tracheostomy (Pink), Difficult Airway (Yellow), LTR (Blue)
+- **Four Color-Coded Forms**: Tracheostomy (Teal), New Tracheostomy (Deep Purple), Difficult Airway (Amber), LTR (Blue)
 - **Local JSON Storage**: Cases saved to `~/Documents/SafeAirway/case_saves/`
-- **Emergency Scenarios**: Interactive emergency guidance with automatic ETT size synchronization
+- **Emergency Scenarios**: Interactive emergency guidance with automatic ETT size synchronization (1300x800px popup)
 - **Freeze Mode**: Lock interface during procedures while keeping emergency scenarios accessible
 - **Responsive UI**: Percentage-based layout that adapts to different screen sizes
-- **Enhanced Visibility**: Enlarged fonts and elements for visibility from 5-10 feet
+- **Enhanced Visibility**: 32px base font size for visibility from 5-10 feet (configurable in StyleManager)
 - **HIPAA Compliant**: Patient last name and MRN hidden from display (preserved in backend)
-- **Smart Notifications**: Temporary popup notifications that don't interfere with workflow
+- **Smart Notifications**: Bottom-centered popup notifications that allow button interaction
 - **Case Management**: Save, load, and manage cases with recent files list
+- **Manufacturer Persistence**: Tube manufacturer correctly saved and restored (uses data value, not display text)
 
-### Recent Improvements (v1.0.0-alpha)
+### Recent Improvements (v1.1.0-alpha)
+- ✅ **Centralized Font Configuration**: All font sizes configurable in one location (`src/utils/StyleManager.cpp`)
+- ✅ **Enhanced Emergency Panel**: Larger popup (1300x800px) with wider buttons to prevent text cutoff
+- ✅ **Improved Notifications**: Bottom-centered notifications that allow button clicks while visible
+- ✅ **Fixed Save Logic**: Resolved manufacturer field reset issue and unwanted save prompts
+- ✅ **Smart Change Detection**: Loading flag prevents false "unsaved changes" during data loading
+- ✅ **Font Size Standardization**: All UI elements now use 32px base font for consistent visibility
+- ✅ **Emergency Instructions**: Increased to 32px for better readability from distance
+
+### Previous Improvements (v1.0.0-alpha)
 - ✅ **Responsive Layout**: Converted to percentage-based sizing for cross-screen compatibility
 - ✅ **Enhanced Visibility**: Increased font sizes (32pt base, up to 40pt for critical elements)
 - ✅ **HIPAA Compliance**: Hidden sensitive patient information from display
@@ -277,8 +287,27 @@ Each case is saved as a JSON file with timestamp and case ID.
 See `PROJECT_DOCUMENTATION.md` for comprehensive technical documentation.
 See `workflow-diagram.md` for application workflow details.
 
+## Customizing Font Sizes
+
+All font sizes can be easily adjusted in one central location:
+
+**File:** `src/utils/StyleManager.cpp` (lines 7-42)
+
+```cpp
+// Edit these values to change font sizes globally
+static const int BASE_FONT_SIZE = 32;                    // Base font for most elements
+static const int HEADER_FONT_SIZE = 36;                  // Main page headers
+static const int EMERGENCY_INSTRUCTIONS_FONT_SIZE = 32;  // Emergency instructions
+static const int FORM_INPUT_FONT_SIZE = 32;              // Form input fields
+static const int BUTTON_FONT_SIZE = 32;                  // Button text
+static const int NOTIFICATION_FONT_SIZE = 32;            // Notification messages
+// ... and more
+```
+
+After changing values, rebuild the application with `./build-linux.sh` (Linux) or rebuild in Windows.
+
 ## Version
-Current version: 1.0.0-alpha
+Current version: 1.1.0-alpha
 
 ## License
 © 2024 Nemours Children's Health

@@ -22,7 +22,7 @@ static const int DECISION_BOX_FONT_SIZE = 38;            // Decision box labels
 // Emergency panel fonts
 static const int EMERGENCY_TITLE_FONT_SIZE = 32;         // "EMERGENCY SCENARIOS" title
 static const int EMERGENCY_RADIO_FONT_SIZE = 26;         // Radio buttons (Can't Suction, etc.)
-static const int EMERGENCY_INSTRUCTIONS_FONT_SIZE = 30;  // Emergency instructions text
+static const int EMERGENCY_INSTRUCTIONS_FONT_SIZE = 32;  // Emergency instructions text
 static const int EMERGENCY_LABEL_FONT_SIZE = 32;        // "Emergency Instructions:" label
 
 // Table fonts
@@ -108,15 +108,15 @@ QColor StyleManager::getFormColour(CaseType caseType) const
 {
     switch (caseType) {
     case CaseType::Tracheostomy:
-        return QColor("#20B2AA");
+        return QColor("#00897B");  // Professional Teal
     case CaseType::NewTracheostomy:
-        return QColor("#FF1493");
+        return QColor("#5E35B1");  // Professional Deep Purple
     case CaseType::DifficultAirway:
-        return QColor("#FFD700");
+        return QColor("#FFB300");  // Professional Amber
     case CaseType::LTR:
-        return QColor("#4169E1");
+        return QColor("#1976D2");  // Professional Blue
     }
-    return QColor("#20B2AA");
+    return QColor("#00897B");
 }
 
 QFont StyleManager::getHeaderFont() const
@@ -244,6 +244,11 @@ void StyleManager::setBaseFontSize(int size)
 int StyleManager::getBaseFontSize() const
 {
     return baseFontSize_;
+}
+
+int StyleManager::getNotificationFontSize() const
+{
+    return NOTIFICATION_FONT_SIZE;
 }
 
 void StyleManager::updateFontSizes()

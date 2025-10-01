@@ -25,10 +25,12 @@ SOURCES += \
     src/views/NewTracheostomyDisplayView.cpp \
     src/widgets/BaseFormWidget.cpp \
     src/widgets/EmergencyPanel.cpp \
+    src/widgets/EmergencyPanelOverlay.cpp \
     src/widgets/EscOverlayMenu.cpp \
     src/widgets/NotificationWidget.cpp \
     src/widgets/PatientInfoWidget.cpp \
-    src/widgets/TextWrapDelegate.cpp
+    src/widgets/TextWrapDelegate.cpp \
+    src/widgets/TubeSpecificationWidget.cpp
 
 HEADERS += \
     src/core/Application.h \
@@ -49,10 +51,12 @@ HEADERS += \
     src/views/NewTracheostomyDisplayView.h \
     src/widgets/BaseFormWidget.h \
     src/widgets/EmergencyPanel.h \
+    src/widgets/EmergencyPanelOverlay.h \
     src/widgets/EscOverlayMenu.h \
     src/widgets/NotificationWidget.h \
     src/widgets/PatientInfoWidget.h \
-    src/widgets/TextWrapDelegate.h
+    src/widgets/TextWrapDelegate.h \
+    src/widgets/TubeSpecificationWidget.h
 
 
 RESOURCES += \

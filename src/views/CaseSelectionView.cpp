@@ -32,87 +32,131 @@ CaseSelectionView::CaseSelectionView(QWidget* parent)
 
 void CaseSelectionView::setupUI()
 {
+    // Set background color for the entire view
+    setStyleSheet("QWidget#CaseSelectionView { background-color: #ECEFF1; }");
+    setObjectName("CaseSelectionView");
+
     mainLayout_ = new QVBoxLayout(this);
-    
+    mainLayout_->setSpacing(25);
+    mainLayout_->setContentsMargins(40, 30, 40, 30);
+
+    // Header section with logo and title
+    QWidget* headerWidget = new QWidget();
+    QVBoxLayout* headerLayout = new QVBoxLayout(headerWidget);
+    headerLayout->setSpacing(15);
+    headerLayout->setContentsMargins(0, 0, 0, 0);
+
+    // Logo
+    logoLabel_ = new QLabel();
+    logoLabel_->setAlignment(Qt::AlignCenter);
+    logoLabel_->setMaximumHeight(100);
+
+    QPixmap logo(":/images/nemours-logo-full.png");
+    if (!logo.isNull()) {
+        logoLabel_->setPixmap(logo.scaled(400, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    } else {
+        logoLabel_->setText("Nemours Children's Health");
+        logoLabel_->setStyleSheet("font-weight: bold; color: #0066CC; font-size: 32px;");
+    }
+    headerLayout->addWidget(logoLabel_);
+
+    // Title
     titleLabel_ = new QLabel("Safe Airway - Case Selection");
     titleLabel_->setAlignment(Qt::AlignCenter);
     titleLabel_->setFont(StyleManager::instance().getHeaderFont());
-    mainLayout_->addWidget(titleLabel_);
-    
-    // Create a container widget for the logo to ensure proper centering
-    QWidget* logoContainer = new QWidget();
-    QHBoxLayout* logoLayout = new QHBoxLayout(logoContainer);
-    logoLayout->setContentsMargins(0, 0, 0, 0);
-    
-    logoLabel_ = new QLabel();
-    logoLabel_->setAlignment(Qt::AlignCenter);
-    logoLabel_->setMaximumHeight(150);
-    logoLabel_->setMaximumWidth(500);
-    
-    // Load and set the Nemours full logo
-    QPixmap logo(":/images/nemours-logo-full.png");
-    if (!logo.isNull()) {
-        logoLabel_->setPixmap(logo.scaled(500, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    } else {
-        logoLabel_->setText("Nemours Children's Health");
-        logoLabel_->setStyleSheet("font-weight: bold; color: #0066CC; font-size: 16px;");
-    }
-    
-    // Add stretchers to center the logo horizontally
-    logoLayout->addStretch();
-    logoLayout->addWidget(logoLabel_);
-    logoLayout->addStretch();
-    
-    mainLayout_->addWidget(logoContainer);
-    
+    titleLabel_->setStyleSheet("font-size: 32px; font-weight: bold; color: #2C3E50; margin-top: 10px;");
+    headerLayout->addWidget(titleLabel_);
+
+    mainLayout_->addWidget(headerWidget);
+
+    // Content section with cards
     QHBoxLayout* contentLayout = new QHBoxLayout();
-    
+    contentLayout->setSpacing(25);
+
     setupNewCaseSection();
     setupExistingCaseSection();
-    
-    contentLayout->addWidget(newCaseGroup_);
-    contentLayout->addWidget(existingCaseGroup_);
-    
+
+    contentLayout->addWidget(newCaseGroup_, 40);
+    contentLayout->addWidget(existingCaseGroup_, 60);
+
     mainLayout_->addLayout(contentLayout);
     mainLayout_->addStretch();
-    
+
     setLayout(mainLayout_);
 }
 
 void CaseSelectionView::setupNewCaseSection()
 {
     newCaseGroup_ = new QGroupBox("Create New Case");
+    newCaseGroup_->setStyleSheet(
+        "QGroupBox {"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   padding: 20px;"
+        "   margin-top: 15px;"
+        "   font-size: 32px;"
+        "   font-weight: bold;"
+        "   color: #2C3E50;"
+        "}"
+        "QGroupBox::title {"
+        "   subcontrol-origin: margin;"
+        "   subcontrol-position: top left;"
+        "   padding: 5px 10px;"
+        "   background-color: white;"
+        "}"
+    );
+
     QVBoxLayout* layout = new QVBoxLayout(newCaseGroup_);
-    
+    layout->setSpacing(12);
+    layout->setContentsMargins(15, 25, 15, 15);
+
     QLabel* instructionLabel = new QLabel("Select the type of case you want to create:");
     instructionLabel->setFont(StyleManager::instance().getBodyFont());
+    instructionLabel->setStyleSheet("color: #546E7A; font-size: 32px; margin-bottom: 5px;");
     layout->addWidget(instructionLabel);
-    
-    tracheostomyButton_ = new QPushButton("Tracheostomy");
-    tracheostomyButton_->setMinimumHeight(50);
-    tracheostomyButton_->setStyleSheet(QString("QPushButton { background-color: %1; color: white; font-weight: bold; }")
-                                      .arg(StyleManager::instance().getFormColour(CaseType::Tracheostomy).name()));
-    
-    newTracheostomyButton_ = new QPushButton("New Tracheostomy");
-    newTracheostomyButton_->setMinimumHeight(50);
-    newTracheostomyButton_->setStyleSheet(QString("QPushButton { background-color: %1; color: white; font-weight: bold; }")
-                                         .arg(StyleManager::instance().getFormColour(CaseType::NewTracheostomy).name()));
-    
-    difficultAirwayButton_ = new QPushButton("Difficult Airway");
-    difficultAirwayButton_->setMinimumHeight(50);
-    difficultAirwayButton_->setStyleSheet(QString("QPushButton { background-color: %1; color: black; font-weight: bold; }")
-                                         .arg(StyleManager::instance().getFormColour(CaseType::DifficultAirway).name()));
-    
-    ltrButton_ = new QPushButton("Laryngotracheal Reconstruction (LTR)");
-    ltrButton_->setMinimumHeight(50);
-    ltrButton_->setStyleSheet(QString("QPushButton { background-color: %1; color: white; font-weight: bold; }")
-                             .arg(StyleManager::instance().getFormColour(CaseType::LTR).name()));
-    
+
+    // Professional color scheme
+    auto createButton = [](const QString& text, const QString& color, const QString& hoverColor) -> QPushButton* {
+        QPushButton* btn = new QPushButton(text);
+        btn->setMinimumHeight(65);
+        btn->setCursor(Qt::PointingHandCursor);
+        btn->setStyleSheet(QString(
+            "QPushButton {"
+            "   background-color: %1;"
+            "   color: white;"
+            "   font-weight: bold;"
+            "   font-size: 32px;"
+            "   border: none;"
+            "   border-radius: 8px;"
+            "   padding: 12px;"
+            "   text-align: left;"
+            "   padding-left: 20px;"
+            "}"
+            "QPushButton:hover {"
+            "   background-color: %2;"
+            "}"
+            "QPushButton:pressed {"
+            "   background-color: %2;"
+            "   padding-top: 14px;"
+            "   padding-bottom: 10px;"
+            "}"
+        ).arg(color, hoverColor));
+        return btn;
+    };
+
+    tracheostomyButton_ = createButton("Tracheostomy", "#00897B", "#00695C");
+    newTracheostomyButton_ = createButton("New Tracheostomy", "#5E35B1", "#4527A0");
+    difficultAirwayButton_ = createButton("Difficult Airway", "#FFB300", "#FFA000");
+    difficultAirwayButton_->setStyleSheet(difficultAirwayButton_->styleSheet().replace("color: white;", "color: #333333;"));
+    ltrButton_ = createButton("Laryngotracheal Reconstruction (LTR)", "#1976D2", "#1565C0");
+
     layout->addWidget(tracheostomyButton_);
     layout->addWidget(newTracheostomyButton_);
     layout->addWidget(difficultAirwayButton_);
     layout->addWidget(ltrButton_);
-    
+    layout->addStretch();
+
     connect(tracheostomyButton_, &QPushButton::clicked, this, &CaseSelectionView::onCaseTypeButtonClicked);
     connect(newTracheostomyButton_, &QPushButton::clicked, this, &CaseSelectionView::onCaseTypeButtonClicked);
     connect(difficultAirwayButton_, &QPushButton::clicked, this, &CaseSelectionView::onCaseTypeButtonClicked);
@@ -122,26 +166,101 @@ void CaseSelectionView::setupNewCaseSection()
 void CaseSelectionView::setupExistingCaseSection()
 {
     existingCaseGroup_ = new QGroupBox("Load Existing Case");
+    existingCaseGroup_->setStyleSheet(
+        "QGroupBox {"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   padding: 20px;"
+        "   margin-top: 15px;"
+        "   font-size: 32px;"
+        "   font-weight: bold;"
+        "   color: #2C3E50;"
+        "}"
+        "QGroupBox::title {"
+        "   subcontrol-origin: margin;"
+        "   subcontrol-position: top left;"
+        "   padding: 5px 10px;"
+        "   background-color: white;"
+        "}"
+    );
+
     QVBoxLayout* layout = new QVBoxLayout(existingCaseGroup_);
-    
+    layout->setSpacing(12);
+    layout->setContentsMargins(15, 25, 15, 15);
+
     QLabel* instructionLabel = new QLabel("Recent cases:");
     instructionLabel->setFont(StyleManager::instance().getBodyFont());
+    instructionLabel->setStyleSheet("color: #546E7A; font-size: 32px; margin-bottom: 5px;");
     layout->addWidget(instructionLabel);
-    
+
     recentCasesList_ = new QListWidget();
-    recentCasesList_->setMinimumHeight(200);
+    recentCasesList_->setMinimumHeight(250);
+    recentCasesList_->setStyleSheet(
+        "QListWidget {"
+        "   background-color: #F5F5F5;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 8px;"
+        "   padding: 8px;"
+        "   font-size: 32px;"
+        "}"
+        "QListWidget::item {"
+        "   background-color: white;"
+        "   border: 1px solid #E8E8E8;"
+        "   border-radius: 6px;"
+        "   padding: 14px;"
+        "   margin: 4px 2px;"
+        "   color: #37474F;"
+        "}"
+        "QListWidget::item:hover {"
+        "   background-color: #E3F2FD;"
+        "   border-color: #90CAF9;"
+        "}"
+        "QListWidget::item:selected {"
+        "   background-color: #BBDEFB;"
+        "   border-color: #64B5F6;"
+        "   color: #1565C0;"
+        "}"
+    );
     layout->addWidget(recentCasesList_);
-    
+
     QHBoxLayout* buttonLayout = new QHBoxLayout();
-    
-    loadCaseButton_ = new QPushButton("Load from File...");
-    refreshButton_ = new QPushButton("Refresh");
-    
+    buttonLayout->setSpacing(10);
+
+    auto createActionButton = [](const QString& text, const QString& color, const QString& hoverColor) -> QPushButton* {
+        QPushButton* btn = new QPushButton(text);
+        btn->setMinimumHeight(50);
+        btn->setCursor(Qt::PointingHandCursor);
+        btn->setStyleSheet(QString(
+            "QPushButton {"
+            "   background-color: %1;"
+            "   color: white;"
+            "   font-weight: bold;"
+            "   font-size: 32px;"
+            "   border: none;"
+            "   border-radius: 8px;"
+            "   padding: 10px 20px;"
+            "}"
+            "QPushButton:hover {"
+            "   background-color: %2;"
+            "}"
+            "QPushButton:pressed {"
+            "   background-color: %2;"
+            "   padding-top: 12px;"
+            "   padding-bottom: 8px;"
+            "}"
+        ).arg(color, hoverColor));
+        return btn;
+    };
+
+    loadCaseButton_ = createActionButton("Load from File...", "#607D8B", "#546E7A");
+    refreshButton_ = createActionButton("Refresh", "#78909C", "#607D8B");
+
     buttonLayout->addWidget(loadCaseButton_);
     buttonLayout->addWidget(refreshButton_);
-    
+
     layout->addLayout(buttonLayout);
-    
+
     connect(recentCasesList_, &QListWidget::itemDoubleClicked, this, &CaseSelectionView::onRecentCaseDoubleClicked);
     connect(loadCaseButton_, &QPushButton::clicked, this, &CaseSelectionView::onLoadCaseClicked);
     connect(refreshButton_, &QPushButton::clicked, this, &CaseSelectionView::refreshRecentCases);

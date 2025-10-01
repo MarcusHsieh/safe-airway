@@ -32,75 +32,74 @@ void TubeSpecificationWidget::setupUI()
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(15);
     
-    // Input section - horizontal label-field pairs stacked vertically
+    // Input section - restructured layout
     inputGroup_ = new QGroupBox("Tube Selection");
     QVBoxLayout* inputLayout = new QVBoxLayout(inputGroup_);
     inputLayout->setSpacing(10);
-    
-    // Manufacturer selection
-    QHBoxLayout* manufacturerLayout = new QHBoxLayout();
+
+    // Single column: Manufacturer and Size vertically stacked
+    QVBoxLayout* topFieldsLayout = new QVBoxLayout();
+    topFieldsLayout->setSpacing(5);
+
+    // Manufacturer
     QLabel* manufacturerLabel = new QLabel("Manufacturer:");
-    manufacturerLabel->setMinimumWidth(120);
+    manufacturerLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     manufacturerCombo_ = new QComboBox();
     manufacturerCombo_->setMinimumHeight(40);
-    manufacturerLayout->addWidget(manufacturerLabel);
-    manufacturerLayout->addWidget(manufacturerCombo_);
-    inputLayout->addLayout(manufacturerLayout);
-    
-    // Size selection
-    QHBoxLayout* sizeLayout = new QHBoxLayout();
+    topFieldsLayout->addWidget(manufacturerLabel);
+    topFieldsLayout->addWidget(manufacturerCombo_);
+
+    // Size
     QLabel* sizeLabel = new QLabel("Size (mm):");
-    sizeLabel->setMinimumWidth(120);
+    sizeLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     sizeCombo_ = new QComboBox();
     sizeCombo_->setMinimumHeight(40);
     sizeCombo_->setEditable(true);
-    sizeLayout->addWidget(sizeLabel);
-    sizeLayout->addWidget(sizeCombo_);
-    inputLayout->addLayout(sizeLayout);
-    
-    // Length field
-    QHBoxLayout* lengthLayout = new QHBoxLayout();
+    topFieldsLayout->addWidget(sizeLabel);
+    topFieldsLayout->addWidget(sizeCombo_);
+
+    inputLayout->addLayout(topFieldsLayout);
+    inputLayout->addSpacing(10);
+
+    // 2-column grid for remaining fields
+    QGridLayout* gridLayout = new QGridLayout();
+    gridLayout->setSpacing(10);
+
+    // Left column: Length and Type
     QLabel* lengthInputLabel = new QLabel("Length (mm):");
-    lengthInputLabel->setMinimumWidth(120);
+    lengthInputLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     lengthEdit_ = new QLineEdit();
     lengthEdit_->setMinimumHeight(40);
     lengthEdit_->setPlaceholderText("e.g., 80, 90");
-    lengthLayout->addWidget(lengthInputLabel);
-    lengthLayout->addWidget(lengthEdit_);
-    inputLayout->addLayout(lengthLayout);
-    
-    // Type field
-    QHBoxLayout* typeLayout = new QHBoxLayout();
+    gridLayout->addWidget(lengthInputLabel, 0, 0);
+    gridLayout->addWidget(lengthEdit_, 1, 0);
+
     QLabel* typeLabel = new QLabel("Type:");
-    typeLabel->setMinimumWidth(120);
+    typeLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     typeEdit_ = new QLineEdit();
     typeEdit_->setMinimumHeight(40);
     typeEdit_->setPlaceholderText("e.g., Pediatric, Neonatal");
-    typeLayout->addWidget(typeLabel);
-    typeLayout->addWidget(typeEdit_);
-    inputLayout->addLayout(typeLayout);
-    
-    // Cuff field
-    QHBoxLayout* cuffLayout = new QHBoxLayout();
+    gridLayout->addWidget(typeLabel, 2, 0);
+    gridLayout->addWidget(typeEdit_, 3, 0);
+
+    // Right column: Cuff and Re-order #
     QLabel* cuffLabel = new QLabel("Cuff:");
-    cuffLabel->setMinimumWidth(120);
+    cuffLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     cuffEdit_ = new QLineEdit();
     cuffEdit_->setMinimumHeight(40);
     cuffEdit_->setPlaceholderText("e.g., Cuffless, Cuffed");
-    cuffLayout->addWidget(cuffLabel);
-    cuffLayout->addWidget(cuffEdit_);
-    inputLayout->addLayout(cuffLayout);
-    
-    // Reorder number
-    QHBoxLayout* reorderLayout = new QHBoxLayout();
+    gridLayout->addWidget(cuffLabel, 0, 1);
+    gridLayout->addWidget(cuffEdit_, 1, 1);
+
     QLabel* reorderLabel = new QLabel("Re-order #:");
-    reorderLabel->setMinimumWidth(120);
+    reorderLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     reorderEdit_ = new QLineEdit();
     reorderEdit_->setMinimumHeight(40);
     reorderEdit_->setPlaceholderText("Product code");
-    reorderLayout->addWidget(reorderLabel);
-    reorderLayout->addWidget(reorderEdit_);
-    inputLayout->addLayout(reorderLayout);
+    gridLayout->addWidget(reorderLabel, 2, 1);
+    gridLayout->addWidget(reorderEdit_, 3, 1);
+
+    inputLayout->addLayout(gridLayout);
     
     mainLayout->addWidget(inputGroup_);
     
@@ -111,50 +110,40 @@ void TubeSpecificationWidget::setupUI()
     separator_->setStyleSheet("QFrame { color: #CCCCCC; }");
     mainLayout->addWidget(separator_);
     
-    // Calculated fields section - vertical layout
+    // Calculated fields section - 2-column grid layout
     calculatedGroup_ = new QGroupBox("Calculated Specifications");
-    QVBoxLayout* calcLayout = new QVBoxLayout(calculatedGroup_);
+    QGridLayout* calcLayout = new QGridLayout(calculatedGroup_);
     calcLayout->setSpacing(10);
-    
-    // Inner Diameter
-    QHBoxLayout* idLayout = new QHBoxLayout();
+
+    // Left column: Inner Diameter and Outer Diameter
     QLabel* idLabel = new QLabel("Inner Diameter:");
+    idLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     innerDiameterLabel_ = new QLabel("—");
-    innerDiameterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 16px; color: #2E7D32; }");
-    idLayout->addWidget(idLabel);
-    idLayout->addStretch();
-    idLayout->addWidget(innerDiameterLabel_);
-    calcLayout->addLayout(idLayout);
-    
-    // Outer Diameter
-    QHBoxLayout* odLayout = new QHBoxLayout();
+    innerDiameterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 32px; color: #00897B; }");
+    calcLayout->addWidget(idLabel, 0, 0);
+    calcLayout->addWidget(innerDiameterLabel_, 1, 0);
+
     QLabel* odLabel = new QLabel("Outer Diameter:");
+    odLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     outerDiameterLabel_ = new QLabel("—");
-    outerDiameterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 16px; color: #2E7D32; }");
-    odLayout->addWidget(odLabel);
-    odLayout->addStretch();
-    odLayout->addWidget(outerDiameterLabel_);
-    calcLayout->addLayout(odLayout);
-    
-    // Length
-    QHBoxLayout* lengthCalcLayout = new QHBoxLayout();
+    outerDiameterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 32px; color: #00897B; }");
+    calcLayout->addWidget(odLabel, 2, 0);
+    calcLayout->addWidget(outerDiameterLabel_, 3, 0);
+
+    // Right column: Length and Suction Catheter
     QLabel* lengthLabel = new QLabel("Length:");
+    lengthLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     lengthLabel_ = new QLabel("—");
-    lengthLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 16px; color: #2E7D32; }");
-    lengthCalcLayout->addWidget(lengthLabel);
-    lengthCalcLayout->addStretch();
-    lengthCalcLayout->addWidget(lengthLabel_);
-    calcLayout->addLayout(lengthCalcLayout);
-    
-    // Recommended Suction Catheter
-    QHBoxLayout* suctionLayout = new QHBoxLayout();
+    lengthLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 32px; color: #00897B; }");
+    calcLayout->addWidget(lengthLabel, 0, 1);
+    calcLayout->addWidget(lengthLabel_, 1, 1);
+
     QLabel* suctionLabel = new QLabel("Suction Catheter:");
+    suctionLabel->setStyleSheet("color: #546E7A; font-size: 32px;");
     suctionCatheterLabel_ = new QLabel("—");
-    suctionCatheterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 16px; color: #1976D2; }");
-    suctionLayout->addWidget(suctionLabel);
-    suctionLayout->addStretch();
-    suctionLayout->addWidget(suctionCatheterLabel_);
-    calcLayout->addLayout(suctionLayout);
+    suctionCatheterLabel_->setStyleSheet("QLabel { font-weight: bold; font-size: 32px; color: #1976D2; }");
+    calcLayout->addWidget(suctionLabel, 2, 1);
+    calcLayout->addWidget(suctionCatheterLabel_, 3, 1);
     
     mainLayout->addWidget(calculatedGroup_);
     
@@ -177,17 +166,18 @@ void TubeSpecificationWidget::setupStyling()
     lengthEdit_->setFont(styleManager.getFormInputFont());
     reorderEdit_->setFont(styleManager.getFormInputFont());
     
-    // Apply modern styling
-    QString inputStyle = 
+    QString inputStyle =
         "QComboBox, QLineEdit {"
-        "   border: 2px solid #E0E0E0;"
+        "   border: 1px solid #E0E0E0;"
         "   border-radius: 6px;"
         "   padding: 8px 12px;"
-        "   background-color: white;"
+        "   background-color: #FAFAFA;"
+        "   font-size: 32px;"
+        "   min-height: 25px;"
         "}"
         "QComboBox:focus, QLineEdit:focus {"
-        "   border-color: #1976D2;"
-        "   background-color: #F3F9FF;"
+        "   border: 2px solid #1976D2;"
+        "   background-color: white;"
         "}"
         "QComboBox:disabled, QLineEdit:disabled {"
         "   background-color: #F5F5F5;"
@@ -198,24 +188,28 @@ void TubeSpecificationWidget::setupStyling()
     sizeCombo_->setStyleSheet(inputStyle);
     typeEdit_->setStyleSheet(inputStyle);
     cuffEdit_->setStyleSheet(inputStyle);
+    lengthEdit_->setStyleSheet(inputStyle);
     reorderEdit_->setStyleSheet(inputStyle);
     
-    // Group box styling
-    QString groupStyle = 
+    // Group box styling - modern card design
+    QString groupStyle =
         "QGroupBox {"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   padding: 20px;"
+        "   margin-top: 15px;"
+        "   font-size: 32px;"
         "   font-weight: bold;"
-        "   border: 2px solid #CCCCCC;"
-        "   border-radius: 8px;"
-        "   margin-top: 1ex;"
-        "   padding-top: 10px;"
+        "   color: #2C3E50;"
         "}"
         "QGroupBox::title {"
         "   subcontrol-origin: margin;"
-        "   left: 10px;"
-        "   padding: 0 8px 0 8px;"
-        "   color: #333333;"
+        "   subcontrol-position: top left;"
+        "   padding: 5px 10px;"
+        "   background-color: white;"
         "}";
-        
+
     inputGroup_->setStyleSheet(groupStyle);
     calculatedGroup_->setStyleSheet(groupStyle);
 }
@@ -370,10 +364,10 @@ void TubeSpecificationWidget::setSpecification(const SpecificationTableRow& spec
 {
     updating_ = true;
     
-    // Find manufacturer in combo box
+    // Find manufacturer in combo box by exact data match
     for (int i = 0; i < manufacturerCombo_->count(); ++i) {
-        if (manufacturerCombo_->itemData(i).toString().contains(spec.makeModel, Qt::CaseInsensitive) ||
-            spec.makeModel.contains(manufacturerCombo_->itemData(i).toString(), Qt::CaseInsensitive)) {
+        QString itemData = manufacturerCombo_->itemData(i).toString();
+        if (itemData.compare(spec.makeModel, Qt::CaseInsensitive) == 0) {
             manufacturerCombo_->setCurrentIndex(i);
             populateSizeComboForManufacturer(manufacturerCombo_->currentData().toString());
             break;
@@ -403,8 +397,8 @@ void TubeSpecificationWidget::setSpecification(const SpecificationTableRow& spec
 SpecificationTableRow TubeSpecificationWidget::getSpecification() const
 {
     SpecificationTableRow spec;
-    
-    spec.makeModel = manufacturerCombo_->currentText();
+
+    spec.makeModel = manufacturerCombo_->currentData().toString();
     spec.size = sizeCombo_->currentText();
     spec.type = typeEdit_->text();
     spec.cuff = cuffEdit_->text();

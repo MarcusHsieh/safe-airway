@@ -95,7 +95,19 @@ void PatientInfoWidget::updateStyles()
     firstNameLabel_->setFont(patientNameFont);
     
     // Make the input text even larger using stylesheet to override form styles
-    firstNameEdit_->setStyleSheet("QLineEdit { font-size: 60px; }");
+    firstNameEdit_->setStyleSheet(
+        "QLineEdit {"
+        "   font-size: 60px;"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 6px;"
+        "   padding: 8px 12px;"
+        "}"
+        "QLineEdit:focus {"
+        "   border: 2px solid #1976D2;"
+        "   background-color: white;"
+        "}"
+    );
     
     // Other fields use regular font (but they're hidden anyway)
     lastNameLabel_->setFont(bodyFont);

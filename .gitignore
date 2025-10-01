@@ -1,3 +1,10 @@
+# Ignore everything
+*
+*/
+
+# Allow .gitignore itself
+!.gitignore
+
 # Qt-related
 *.pro.user
 *.pro.user.*
@@ -143,3 +150,4 @@ object_script.*
 
 safe-airway_autogen/
 .qt/
+.misc/

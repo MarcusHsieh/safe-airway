@@ -215,6 +215,8 @@ void MainWindow::setupAutoSave()
 void MainWindow::showCaseSelectionView()
 {
     stackedWidget_->setCurrentIndex(CaseSelectionViewIndex);
+    setUnsavedChanges(false); // Clear unsaved changes when returning to case selection
+    currentFilePath_.clear(); // Clear current file path
     updateWindowTitle();
 }
 

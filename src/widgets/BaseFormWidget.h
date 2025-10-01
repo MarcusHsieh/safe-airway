@@ -52,14 +52,12 @@ signals:
     void formChanged();
     void emergencyScenarioChanged(const QString& scenario);
     void backRequested();
-    void displayModeRequested();
 
 protected slots:
     void onSaveClicked();
     void onFreezeClicked();
     void onPrintClicked();
     void onBackClicked();
-    void onDisplayModeClicked();
     void onPatientInfoChanged();
     void onEmergencyScenarioSelected(const QString& scenario);
     void onSuctionSizeChanged(int size);
@@ -67,7 +65,6 @@ protected slots:
 
 protected:
     virtual void setupUI();
-    virtual void setupDecisionBoxes();
     virtual void setupSidePanel();
     virtual void setupActionButtons();
     virtual void setupFormSpecificFields() {}
@@ -80,6 +77,7 @@ protected:
     Case currentCase_;
     bool frozen_;
     bool justSaved_;
+    bool loading_;
     QSize screenSize_;
     
     QScrollArea* scrollArea_;
@@ -101,12 +99,7 @@ protected:
     
     EmergencyPanelOverlay* emergencyPanelOverlay_;
     QPushButton* emergencyButton_;
-    
-    QGroupBox* decisionBoxGroup_;
-    QCheckBox* maskVentilateCheckBox_;
-    QCheckBox* intubateAboveCheckBox_;
-    QCheckBox* intubateStomaCheckBox_;
-    
+
     QGroupBox* sidePanelGroup_;
     QSpinBox* suctionSizeSpinBox_;
     QLineEdit* suctionDepthEdit_;
@@ -116,7 +109,6 @@ protected:
     QPushButton* saveButton_;
     QPushButton* printButton_;
     QPushButton* backButton_;
-    QPushButton* displayModeButton_;
     
     void connectSignals();
     void loadFormData();

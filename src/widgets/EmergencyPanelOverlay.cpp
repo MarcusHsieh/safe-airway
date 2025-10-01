@@ -49,26 +49,26 @@ void EmergencyPanelOverlay::setupUI()
     QHBoxLayout* centerLayout = new QHBoxLayout();
     centerLayout->addStretch();
     
-    // Overlay panel with background
+    // Overlay panel with modern card styling
     overlayPanel_ = new QWidget();
-    overlayPanel_->setFixedSize(800, 600);
+    overlayPanel_->setFixedSize(1300, 800);
     overlayPanel_->setStyleSheet(
         "QWidget {"
-        "   background-color: rgba(255, 255, 255, 240);"
-        "   border: 2px solid #CCCCCC;"
-        "   border-radius: 15px;"
+        "   background-color: white;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
         "}"
     );
-    
+
     panelLayout_ = new QVBoxLayout(overlayPanel_);
-    panelLayout_->setSpacing(20);
-    panelLayout_->setContentsMargins(30, 30, 30, 30);
-    
+    panelLayout_->setSpacing(25);
+    panelLayout_->setContentsMargins(40, 35, 40, 35);
+
     // Title
     titleLabel_ = new QLabel("Emergency Scenarios");
     titleLabel_->setAlignment(Qt::AlignCenter);
-    titleLabel_->setFont(StyleManager::instance().getHeaderFont());
-    titleLabel_->setStyleSheet("color: #333333; font-weight: bold; font-size: 24px;");
+    titleLabel_->setFont(StyleManager::instance().getEmergencyTitleFont());
+    titleLabel_->setStyleSheet("color: #DC143C; font-weight: bold;");
     panelLayout_->addWidget(titleLabel_);
     
     // Create horizontal layout for scenarios and instructions side by side
@@ -79,11 +79,29 @@ void EmergencyPanelOverlay::setupUI()
     
     scenarioGroupBox_ = new QGroupBox("Select Type:");
     scenarioGroupBox_->setMinimumHeight(200);
-    scenarioGroupBox_->setMaximumWidth(300);
-    scenarioGroupBox_->setMinimumWidth(250);
+    scenarioGroupBox_->setMaximumWidth(450);
+    scenarioGroupBox_->setMinimumWidth(400);
+    scenarioGroupBox_->setStyleSheet(
+        "QGroupBox {"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 12px;"
+        "   padding: 20px;"
+        "   margin-top: 15px;"
+        "   font-size: 32px;"
+        "   font-weight: bold;"
+        "   color: #2C3E50;"
+        "}"
+        "QGroupBox::title {"
+        "   subcontrol-origin: margin;"
+        "   subcontrol-position: top left;"
+        "   padding: 5px 10px;"
+        "   background-color: #FAFAFA;"
+        "}"
+    );
     QVBoxLayout* scenarioLayout = new QVBoxLayout(scenarioGroupBox_);
-    scenarioLayout->setSpacing(10);
-    scenarioLayout->setContentsMargins(15, 20, 15, 15);
+    scenarioLayout->setSpacing(12);
+    scenarioLayout->setContentsMargins(15, 25, 15, 15);
     
     scenarioGroup_ = new QButtonGroup(this);
     
@@ -100,12 +118,18 @@ void EmergencyPanelOverlay::setupUI()
     decannulationButton_->setCheckable(true);
     hemoptysisButton_->setCheckable(true);
     
-    // Set minimum height for better visibility
-    cantSuctionButton_->setMinimumHeight(50);
-    cantVentilateButton_->setMinimumHeight(50);
-    o2SatDropButton_->setMinimumHeight(50);
-    decannulationButton_->setMinimumHeight(50);
-    hemoptysisButton_->setMinimumHeight(50);
+    // Set minimum height and width for better visibility
+    cantSuctionButton_->setMinimumHeight(60);
+    cantVentilateButton_->setMinimumHeight(60);
+    o2SatDropButton_->setMinimumHeight(60);
+    decannulationButton_->setMinimumHeight(60);
+    hemoptysisButton_->setMinimumHeight(60);
+
+    cantSuctionButton_->setMinimumWidth(350);
+    cantVentilateButton_->setMinimumWidth(350);
+    o2SatDropButton_->setMinimumWidth(350);
+    decannulationButton_->setMinimumWidth(350);
+    hemoptysisButton_->setMinimumWidth(350);
     
     scenarioGroup_->addButton(cantSuctionButton_, 0);
     scenarioGroup_->addButton(cantVentilateButton_, 1);
@@ -132,17 +156,25 @@ void EmergencyPanelOverlay::setupUI()
     QVBoxLayout* instructionsLayout = new QVBoxLayout();
     QLabel* instructionsLabel = new QLabel("Emergency Instructions:");
     instructionsLabel->setFont(StyleManager::instance().getEmergencyLabelFont());
-    instructionsLabel->setStyleSheet("color: #333333; font-weight: bold;");
+    instructionsLabel->setStyleSheet("color: #2C3E50; font-weight: bold;");
     instructionsLayout->addWidget(instructionsLabel);
     
     instructionsEdit_ = new QTextEdit();
     instructionsEdit_->setReadOnly(true);
-    instructionsEdit_->setMinimumHeight(350);
-    instructionsEdit_->setMaximumHeight(400);
-    instructionsEdit_->setMinimumWidth(350);
+    instructionsEdit_->setMinimumHeight(500);
+    instructionsEdit_->setMaximumHeight(650);
+    instructionsEdit_->setMinimumWidth(600);
     instructionsEdit_->setWordWrapMode(QTextOption::WordWrap);
     instructionsEdit_->setPlaceholderText("Select an emergency scenario to view instructions.");
     instructionsEdit_->setFont(StyleManager::instance().getEmergencyInstructionsFont());
+    instructionsEdit_->setStyleSheet(
+        "QTextEdit {"
+        "   background-color: #FAFAFA;"
+        "   border: 1px solid #E0E0E0;"
+        "   border-radius: 8px;"
+        "   padding: 15px;"
+        "}"
+    );
     instructionsLayout->addWidget(instructionsEdit_);
     
     contentLayout->addLayout(instructionsLayout);
@@ -153,20 +185,13 @@ void EmergencyPanelOverlay::setupUI()
     closeButton_ = new QPushButton("Close");
     closeButton_->setMinimumHeight(50);
     closeButton_->setMinimumWidth(120);
-    
+    closeButton_->setCursor(Qt::PointingHandCursor);
+
     QHBoxLayout* closeLayout = new QHBoxLayout();
     closeLayout->addStretch();
     closeLayout->addWidget(closeButton_);
-    closeLayout->addStretch();
-    
+
     panelLayout_->addLayout(closeLayout);
-    
-    // Add close instruction
-    QLabel* instructionLabel = new QLabel("Press ESC to close or click outside panel");
-    instructionLabel->setAlignment(Qt::AlignCenter);
-    instructionLabel->setFont(StyleManager::instance().getBodyFont());
-    instructionLabel->setStyleSheet("color: #666666; font-style: italic;");
-    panelLayout_->addWidget(instructionLabel);
     
     centerLayout->addWidget(overlayPanel_);
     centerLayout->addStretch();
@@ -191,28 +216,35 @@ void EmergencyPanelOverlay::setupButtonStyling()
 
 QString EmergencyPanelOverlay::getButtonStyleSheet(const QString& color) const
 {
+    // Calculate darker hover color (darken by 15%)
+    QColor baseColor(color);
+    QColor hoverColor = baseColor.darker(115);
+
     return QString(
         "QPushButton {"
         "   background-color: %1;"
         "   color: white;"
         "   font-weight: bold;"
-        "   font-size: 16px;"
-        "   border: 2px solid %1;"
+        "   font-size: 26px;"
+        "   border: none;"
         "   border-radius: 8px;"
-        "   padding: 8px 16px;"
+        "   padding: 12px 16px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: rgba(0, 0, 0, 0.1);"
-        "   border-color: %1;"
+        "   background-color: %2;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: rgba(0, 0, 0, 0.2);"
+        "   background-color: %2;"
+        "   padding-top: 14px;"
+        "   padding-bottom: 10px;"
         "}"
         "QPushButton:checked {"
-        "   background-color: rgba(255, 255, 255, 0.2);"
-        "   border: 3px solid white;"
+        "   background-color: %1;"
+        "   border: 4px solid #FFD700;"
+        "   color: white;"
+        "   font-weight: bold;"
         "}"
-    ).arg(color);
+    ).arg(color, hoverColor.name());
 }
 
 void EmergencyPanelOverlay::connectSignals()

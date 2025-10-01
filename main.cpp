@@ -8,6 +8,10 @@
 
 int main(int argc, char *argv[])
 {
+    // Enable high DPI scaling for Windows (Qt 6)
+    // This ensures the application respects Windows display scaling settings
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
     QApplication app(argc, argv);
     
     if (!Application::instance().initialize(&app)) {

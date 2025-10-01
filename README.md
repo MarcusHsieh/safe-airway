@@ -11,6 +11,26 @@ A digital form application for airway management at Nemours Children's Health, b
 
 **Important**: If you have an older compiler (GCC 8.x), you may encounter C++17 compatibility issues. Please upgrade to Qt 6.7.3 with MinGW 11.2 or use MSVC build tools.
 
+### Creating a Windows Distributable (Portable .exe)
+
+To create a standalone Windows executable that can run without Qt installed:
+
+**Using the automated build script (Easiest):**
+```batch
+# Open Windows Command Prompt (not WSL)
+cd C:\_Projects\safe-airway
+build-windows-release.bat
+```
+
+The script will:
+- Build a release version
+- Bundle all Qt dependencies automatically
+- Create a `safe-airway-dist` folder with everything needed
+
+**Result:** A portable ~25-40 MB folder that runs on any Windows 10/11 machine.
+
+**For detailed instructions**, see `CREATE_WINDOWS_EXECUTABLE.md`
+
 ### Building
 
 #### Linux (WSL/Ubuntu/Debian)
@@ -76,116 +96,15 @@ safe-airway.exe
 2. Select the kit: Desktop Qt 6.7.3 MinGW 11.2 64-bit
 3. Configure Project → Build → Run
 
-## Creating a Distributable Windows Executable
+## Windows Executable Distribution
 
-To create a standalone Windows executable that can be distributed to other computers without Qt installed:
+For complete instructions on creating a portable Windows .exe, see **`CREATE_WINDOWS_EXECUTABLE.md`**
 
-### Step 1: Build Release Version
-```batch
-REM Set up Qt environment
-set QTDIR=C:\Qt\6.7.3\mingw_64
-set PATH=%QTDIR%\bin;%PATH%
-
-REM Navigate to project directory
-cd C:\_Projects\safe-airway
-
-REM Clean previous builds
-rmdir /s /q release 2>nul
-rmdir /s /q debug 2>nul
-
-REM Build release version
-qmake safe-airway.pro CONFIG+=release
-mingw32-make clean
-mingw32-make -j4
-```
-
-### Step 2: Create Distribution Directory
-```batch
-REM Create distribution folder
-mkdir safe-airway-dist
-cd safe-airway-dist
-
-REM Copy the executable
-copy ..\release\safe-airway.exe .
-```
-
-### Step 3: Bundle Qt Dependencies
-Use Qt's deployment tool to automatically include all required DLLs:
-
-```batch
-REM Run windeployqt to bundle Qt libraries
-windeployqt.exe safe-airway.exe
-
-REM This will automatically copy:
-REM - Qt6Core.dll, Qt6Widgets.dll, Qt6Gui.dll, Qt6PrintSupport.dll
-REM - platforms\qwindows.dll (platform plugin)
-REM - styles\qwindowsvistastyle.dll (Windows theme)
-REM - MinGW runtime libraries
-```
-
-### Step 4: Add Additional Runtime Dependencies
-```batch
-REM Copy MinGW runtime libraries (if not included by windeployqt)
-copy "%QTDIR%\bin\libgcc_s_seh-1.dll" . 2>nul
-copy "%QTDIR%\bin\libstdc++-6.dll" . 2>nul
-copy "%QTDIR%\bin\libwinpthread-1.dll" . 2>nul
-
-REM Copy Visual C++ Redistributable (if using MSVC build)
-REM These are usually found in C:\Program Files (x86)\Microsoft Visual Studio\...
-REM Or download from Microsoft and install on target machines
-```
-
-### Step 5: Test the Distribution
-```batch
-REM Test on a clean machine or VM without Qt installed
-REM The safe-airway-dist folder should now be self-contained
-
-REM Optional: Create installer using NSIS, Inno Setup, or WiX
-```
-
-### Alternative: CMake Release Build
-```batch
-REM Using CMake for release build
-rmdir /s /q build-release 2>nul
-mkdir build-release
-cd build-release
-
-cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
-mingw32-make -j4
-
-REM Copy executable to distribution folder
-mkdir ..\safe-airway-dist
-copy safe-airway.exe ..\safe-airway-dist\
-
-REM Run windeployqt from distribution folder
-cd ..\safe-airway-dist
-windeployqt.exe safe-airway.exe
-```
-
-### Final Distribution Structure
-Your distributable folder should look like this:
-```
-safe-airway-dist/
-├── safe-airway.exe          (Main executable)
-├── Qt6Core.dll              (Qt core library)
-├── Qt6Widgets.dll           (Qt widgets library)
-├── Qt6Gui.dll               (Qt GUI library)
-├── Qt6PrintSupport.dll      (Qt printing library)
-├── libgcc_s_seh-1.dll       (MinGW runtime)
-├── libstdc++-6.dll          (MinGW C++ library)
-├── libwinpthread-1.dll      (MinGW threading)
-├── platforms/
-│   └── qwindows.dll         (Windows platform plugin)
-└── styles/
-    └── qwindowsvistastyle.dll (Windows visual style)
-```
-
-### Distribution Notes
-- **Size**: Expect ~25-40MB for the complete package
-- **Compatibility**: Works on Windows 10/11 (64-bit)
-- **Testing**: Always test on a clean machine without Qt installed
-- **Installer**: Consider using NSIS or Inno Setup for professional distribution
-- **Code Signing**: For professional deployment, sign the executable with a code signing certificate
+**Quick Summary:**
+1. Run `build-windows-release.bat` from Windows Command Prompt
+2. Distributable package created in `safe-airway-dist/` (~25-40 MB)
+3. Test on machines without Qt installed
+4. Distribute as ZIP or create installer with Inno Setup
 
 ### Features
 - **Four Color-Coded Forms**: Tracheostomy (Teal), New Tracheostomy (Deep Purple), Difficult Airway (Amber), LTR (Blue)

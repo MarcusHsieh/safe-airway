@@ -145,11 +145,12 @@ void CaseSelectionView::setupNewCaseSection()
         return btn;
     };
 
-    tracheostomyButton_ = createButton("Tracheostomy", "#00897B", "#00695C");
-    newTracheostomyButton_ = createButton("New Tracheostomy", "#5E35B1", "#4527A0");
-    difficultAirwayButton_ = createButton("Difficult Airway", "#FFB300", "#FFA000");
+    tracheostomyButton_ = createButton("Tracheostomy", "#e8e8e8", "#d0d0d0");
+    tracheostomyButton_->setStyleSheet(tracheostomyButton_->styleSheet().replace("color: white;", "color: #333333;"));
+    newTracheostomyButton_ = createButton("New Tracheostomy", "#ff66cc", "#dd44aa");
+    difficultAirwayButton_ = createButton("Difficult Airway", "#ffc000", "#dd9900");
     difficultAirwayButton_->setStyleSheet(difficultAirwayButton_->styleSheet().replace("color: white;", "color: #333333;"));
-    ltrButton_ = createButton("Laryngotracheal Reconstruction (LTR)", "#1976D2", "#1565C0");
+    ltrButton_ = createButton("Laryngotracheal Reconstruction (LTR)", "#00b0f0", "#0090cc");
 
     layout->addWidget(tracheostomyButton_);
     layout->addWidget(newTracheostomyButton_);

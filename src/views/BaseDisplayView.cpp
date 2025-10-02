@@ -40,6 +40,13 @@ void BaseDisplayView::setupUI()
     mainLayout_->setSpacing(20);
     mainLayout_->setContentsMargins(30, 30, 30, 30);
 
+    // Get case type color
+    QString caseColor = getCaseTypeColor();
+
+    // Set background color based on case type
+    setStyleSheet(QString("QWidget#BaseDisplayView { background-color: %1; }").arg(caseColor));
+    setObjectName("BaseDisplayView");
+
     // Header section with logo and title
     headerLayout_ = new QHBoxLayout();
     headerLayout_->setSpacing(20);
@@ -194,6 +201,22 @@ void BaseDisplayView::updateDisplay()
     maskVentilateLabel_->setVisible(decision.maskVentilate);
     intubateAboveLabel_->setVisible(decision.intubateAbove);
     intubateStomaLabel_->setVisible(decision.intubateStoma);
+}
+
+QString BaseDisplayView::getCaseTypeColor() const
+{
+    switch (caseType_) {
+        case CaseType::Tracheostomy:
+            return "#e8e8e8";
+        case CaseType::NewTracheostomy:
+            return "#ff66cc";
+        case CaseType::DifficultAirway:
+            return "#ffc000";
+        case CaseType::LTR:
+            return "#00b0f0";
+        default:
+            return "#FFFFFF";
+    }
 }
 
 void BaseDisplayView::updateStyles()

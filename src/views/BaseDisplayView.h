@@ -35,6 +35,7 @@ protected:
     virtual void updateDisplay();
 
     void updateStyles();
+    QString getCaseTypeColor() const;
 
 protected slots:
     void onBackToFormClicked();

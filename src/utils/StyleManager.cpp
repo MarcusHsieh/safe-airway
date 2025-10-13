@@ -110,7 +110,7 @@ QColor StyleManager::getFormColour(CaseType caseType) const
     case CaseType::Tracheostomy:
         return QColor("#00897B");  // Professional Teal
     case CaseType::NewTracheostomy:
-        return QColor("#5E35B1");  // Professional Deep Purple
+        return QColor("#ff66cc");  // Pink
     case CaseType::DifficultAirway:
         return QColor("#FFB300");  // Professional Amber
     case CaseType::LTR:
